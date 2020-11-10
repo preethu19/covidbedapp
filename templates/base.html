@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Covid Bed Finder</title>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/home.css') }}">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+	<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw==" crossorigin="anonymous" />
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/patient_add.css') }}">
+	
+</head>
+<body>
+
+<!-- Navbar Section -->
+<div class="navbar__main">
+	<header class="header">
+	  <img src="{{ url_for('static', filename='img/logo.jpg') }}" class="logo">
+	  <input class="menu-btn" type="checkbox" id="menu-btn" />
+	  <label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
+	  <ul class="menu">
+	    <li><a href="{{ url_for('home') }}">Home</a></li>
+          {% block navbar %}
+          {% endblock %}
+	  </ul>
+	</header>
+</div>
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>

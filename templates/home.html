@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block navbar %}
+	<li><a href="#about">About</a></li>
+	<li><a href="#contact">Contact</a></li>
+	<li><a href="{{ url_for('patient_list') }}">Patients</a></li>
+	<li><a href="#careers">Logout</a></li>
+	<li><a href="#careers">Login</a></li>
+{% endblock navbar %}
+{% block content %}
+<!-- Header Section -->
+<div class="header__main" id="home" data-aos="fade-up" data-aos-duration="1000">
+	<div class="header__wrapper">
+		<div class="column__left">
+			<h1>Covid Bed Finder</h1>
+			<p>Get details of bed available in your region with a click</p>
+			<button class="button">Click Me</button>
+		</div>
+		<div class="column__right" data-aos="fade-left" data-aos-duration="1000">
+			<img src="{{ url_for('static', filename='img/nurse1.png') }}" class="header__img">
+		</div>
+	</div>
+</div>
+
+<!-- About Section -->
+     <div class="about__section" id="about" data-aos="fade-up" data-aos-duration="1000">
+      <div class="left__about">
+          <div class="about__box" data-aos="fade-right" data-aos-duration="1000">
+              <img src="{{ url_for('static', filename='img/covid.jpg') }}" class="about__img">
+          </div>
+      </div>
+      <div class="right__about">
+          <div class="about__text">
+              <h2>About Us</h2><br/>
+              <p>In the present day, the entire world is facing the issue of the pandemic. We have been seeing that people are losing their lives without getting hospitalized in time. So we have come up with Covid Bed Finder. On this website, you can get real-time information about the availability of beds in different hospitals across the cities.</p>
+              <h1>YOUR LIFE OUR PRIOIRTY</h1>
+          </div> 
+      </div>
+     </div>
+
+<!-- Contact Section -->
+     <div class="contact__header" id="contact" data-aos="fade-up" data-aos-duration="1000">
+     	<div class="contact__wrapper">
+     		<div class="row contact__box container">
+     			
+     			<form class="form-horizontal" method="POST">
+					{{ form.hidden_tag() }}
+     				<legend class="text-center">Contact us:</legend>
+     				<fieldset>
+	     				<div class="form-group col">
+	     					
+	     					<div class="col">
+
+     							{{ form.name(class="col form-control") }}
+
+	     					</div>
+	     				</div>
+	     				<div class="form-group col">
+	     					
+	     					<div class="col">
+	     						{{ form.phone(class="col form-control") }}
+
+	     					</div>
+	     				</div>
+	     				<div class="form-group col">
+	     					
+	     					<div class="col">
+	     						{{ form.content(class="col form-control",rows="6") }}
+
+	     					</div>
+	     				</div>
+     				</fieldset>
+     				<fieldset>
+     					<div class="col">
+
+     						{{ form.submit(class="button") }}
+     					</div>
+     					
+     				</fieldset>
+     			</form>
+     		</div>
+     		<div class="contact__right">
+     			<div class="report__wrapper">
+     				<div class="box box1" data-aos="flip-down">
+     					<div class="box_left">
+     						<h1>Total Cases: </h1>
+	     					<p>100000</p>
+     					</div>
+	     				<div class="box_right">
+	     					<img src="{{ url_for('static', filename='img/total.svg') }}" class="count_logo">
+	     				</div>
+	     			</div>
+	     			<div class="box box2" data-aos="flip-down">
+	     				<div class="box_left">
+		     				<h1>Total Active: </h1>
+		     				<p>20000</p>
+		     			</div>
+		     			<div class="box_right">
+	     					<img src="{{ url_for('static', filename='img/active.svg') }}" class="count_logo">
+	     				</div>
+	     			</div>
+	     			<div class="box box3" data-aos="flip-down">
+	     				<div class="box_left">
+	     					<h1>Total Recovered: </h1>
+	     					<p>20000</p>
+	     				</div>
+	     				<div class="box_right">
+	     					<img src="{{ url_for('static', filename='img/recovered.svg') }}" class="count_logo">
+	     				</div>
+	     			</div>
+	     			<div class="box box4" data-aos="flip-down">
+	     				<div class="box_left">
+	     					<h1>Total Deaths: </h1>
+	     					<p>20000</p>
+	     				</div>
+	     				<div class="box_right">
+	     					<img src="{{ url_for('static', filename='img/death.svg') }}" class="count_logo">
+	     				</div> 
+	     			</div>
+     			</div>
+     		</div>
+     	</div>
+     </div>
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+  AOS.init();
+</script>
+{% endblock content %}
