@@ -496,11 +496,6 @@ background: linear-gradient(to bottom, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, 
 
 .table__header{
 	padding: 100px;
-	background: #0f0c29;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to right, #24243e, #302b63, #0f0c29);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to right, #24243e, #302b63, #0f0c29); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
-	height: 500px;
 	padding-bottom: 0;
 	text-align: center;
 }
@@ -509,6 +504,7 @@ background: linear-gradient(to right, #24243e, #302b63, #0f0c29); /* W3C, IE 10+
 	display: flex;
     flex-direction: column;
     justify-content: center;
+
 }
 
 .table__content{
@@ -538,10 +534,6 @@ td{
 }
 
 .patient__header{
-	background: #0f0c29;  /* fallback for old browsers */
-background: -webkit-linear-gradient(to right, #24243e, #302b63, #0f0c29);  /* Chrome 10-25, Safari 5.1-6 */
-background: linear-gradient(to right, #24243e, #302b63, #0f0c29); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
-
 text-align: center;
 }
 
@@ -606,4 +598,21 @@ tr:hover td a{
 	background: black;
 	color: white;
 	font-weight: bold;
+}
+
+.table__header{
+  height: 600px;
+}
+
+@media (max-width: 600px) {
+    .table__header{
+        height: 850px;
+}
+}
+
+body{
+    width:100%;
+    background: #0f0c29;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #24243e, #302b63, #0f0c29);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #24243e, #302b63, #0f0c29); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }

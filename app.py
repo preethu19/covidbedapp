@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from forms import ContactForm, PatientBedForm
 from models import Contact, db, app, Hospital, Patient, Bed
 from datetime import datetime
@@ -40,17 +40,21 @@ def patient_list():
 @app.route('/patients/new',  methods=['GET','POST'])
 def patient_add():
     form = PatientBedForm()
-    if request.method == 'POST' and form.validate_on_submit():
+    if request.method == 'POST' and form.validate_on_submit() and form.gender.data != 'choose gender' and\
+            form.status.data != 'choose patient status' and form.blood_group.data != 'choose blood group'\
+            and form.bed_type.data != 'choose bed type':
         h = Hospital.query.first()
         b = Bed(bed_number=form.bed_number.data, bed_type=form.bed_type.data, cost=form.cost.data, hospital=h)
         db.session.add(b)
         p = Patient(name=form.name.data, age=form.age.data, gender=form.gender.data, status=form.status.data,\
                      phone=form.phone.data, address=form.address.data, blood_group=form.blood_group.data, bed=b)
         db.session.add(p)
+
         db.session.commit()
         print('Commit successful')
-        return redirect(url_for('patient_list'))
-    else:
+        flash('Patient Data is added', 'success')
+    elif request.method == 'POST':
+        flash('All fields are required', 'danger')
         print('Validation failed')
         print(form.errors)
     return render_template('patient_add.html', form=form)
@@ -59,7 +63,9 @@ def patient_add():
 def patient_update(patient_id):
     form = PatientBedForm()
     p = Patient.query.get_or_404(patient_id)
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate_on_submit() and form.gender.data != 'choose gender' and \
+            form.status.data != 'choose patient status' and form.blood_group.data != 'choose blood group' \
+            and form.bed_type.data != 'choose bed type':
         p.name = form.name.data
         p.age = form.age.data
         p.gender = form.gender.data
@@ -73,6 +79,9 @@ def patient_update(patient_id):
         if (not p.discharge_date) and form.status.data == 'discharged':
             p.discharge_date = datetime.utcnow()
         db.session.commit()
+        flash('Patient Data is updated', 'success')
+    elif request.method == 'POST':
+        flash('All fields are required', 'danger')
     form.name.data = p.name
     form.age.data = p.age
     form.gender.data = p.gender

@@ -14,7 +14,15 @@
 				<span class="contact100-form-title">
 					Add Patient Details
 				</span>
-
+				{% with messages = get_flashed_messages(with_categories=true) %}
+					{% if messages %}
+						{% for category, message in messages %}
+							<div class="alert alert-{{ category }}">
+								{{ message }}
+							</div>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Name</span>
 					{{ form.name(class="input100 is-invalid") }}
