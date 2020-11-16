@@ -1,12 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from forms import ContactForm, PatientBedForm
-from models import Contact, db, app, Hospital, Patient, Bed
 from datetime import datetime
+import os
 
+app = Flask(__name__)
+
+
+
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
+    os.path.join(basedir, 'data.sqlite')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'mysecret'
 
-
-
+from models import db
+from forms import ContactForm, PatientBedForm
+from models import Contact, Hospital, Patient, Bed
 
 @app.route('/', methods=['GET','POST'])
 def home():
@@ -46,8 +54,7 @@ def patient_add():
         h = Hospital.query.first()
         b = Bed(bed_number=form.bed_number.data, bed_type=form.bed_type.data, cost=form.cost.data, hospital=h)
         db.session.add(b)
-        p = Patient(name=form.name.data, age=form.age.data, gender=form.gender.data, status=form.status.data,\
-                     phone=form.phone.data, address=form.address.data, blood_group=form.blood_group.data, bed=b)
+        p = Patient(name=form.name.data, age=form.age.data, gender=form.gender.data, status=form.status.data, phone=form.phone.data, address=form.address.data, blood_group=form.blood_group.data, bed=b)
         db.session.add(p)
 
         db.session.commit()
@@ -99,3 +106,8 @@ def patient_update(patient_id):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db}
