@@ -3,9 +3,16 @@
 	<li><a href="#about">About</a></li>
 	<li><a href="#contact">Contact</a></li>
 	<li><a href="{{ url_for('patient_list') }}">Patients</a></li>
-	<li><a href="#careers">Logout</a></li>
-	<li><a href="#careers">Login</a></li>
+	{% if current_user.is_active %}
+	<li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
+	<li><a href="{{ url_for('logout') }}">Logout</a></li>
+	{% else %}
+	<li><a href="{{ url_for('login') }}">Login</a></li>
+	<li><a href="{{ url_for('register') }}">Register</a></li>
+	{% endif %}
 {% endblock navbar %}
+
+
 {% block content %}
 <!-- Header Section -->
 <div class="header__main" id="home" data-aos="fade-up" data-aos-duration="1000">
@@ -13,7 +20,7 @@
 		<div class="column__left">
 			<h1>Covid Bed Finder</h1>
 			<p>Get details of bed available in your region with a click</p>
-			<button class="button">Click Me</button>
+			<a href="{{ url_for('patient_list') }}"><button class="button">Get Patient List</button></a>
 		</div>
 		<div class="column__right" data-aos="fade-left" data-aos-duration="1000">
 			<img src="{{ url_for('static', filename='img/nurse1.png') }}" class="header__img">

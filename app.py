@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from datetime import datetime
 import os
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+from werkzeug.urls import url_parse
 
 app = Flask(__name__)
-
-
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
@@ -12,9 +12,12 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'mysecret'
 
+login = LoginManager(app)
+login.login_view = 'login'
+
 from models import db
-from forms import ContactForm, PatientBedForm
-from models import Contact, Hospital, Patient, Bed
+from forms import ContactForm, PatientBedForm, LoginForm, RegistrationForm
+from models import Contact, Hospital, Patient, Bed, User
 
 @app.route('/', methods=['GET','POST'])
 def home():
@@ -30,12 +33,13 @@ def home():
         print(contacts)
         return redirect(url_for('home'))
     else:
-        print('Validation error')
-    return render_template('home.html', form=form)
+        print('Home loaded')
+        return render_template('home.html', form=form)
 
 @app.route('/profile')
+@login_required
 def profile():
-    pass
+    return redirect(url_for('home'))
 
 @app.route('/patients')
 def patient_list():
@@ -46,6 +50,7 @@ def patient_list():
 
 
 @app.route('/patients/new',  methods=['GET','POST'])
+@login_required
 def patient_add():
     form = PatientBedForm()
     if request.method == 'POST' and form.validate_on_submit() and form.gender.data != 'choose gender' and\
@@ -67,6 +72,7 @@ def patient_add():
     return render_template('patient_add.html', form=form)
 
 @app.route('/patients/<int:patient_id>/update',methods=['GET', 'POST'])
+@login_required
 def patient_update(patient_id):
     form = PatientBedForm()
     p = Patient.query.get_or_404(patient_id)
@@ -104,10 +110,53 @@ def patient_update(patient_id):
     return render_template('patient_update.html', form=form, admit_date=admit_date, discharge_date=discharge_date)
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if current_user.is_authenticated:
+        flash('You are already logged in', 'success')
+        return redirect(url_for('home'))
+
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(name = form.name.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password','danger')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        next_page = request.args.get('next')
+        if not next_page or url_parse(next_page).netloc != '':
+            next_page = url_for('home')
+        flash('Logged In Successfully', 'success')
+        return redirect(next_page)
+        
+    return render_template('login.html', title='Log In', form=form)
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    logout_user()
+    flash('Logged Out Successfully', 'success')
+    return redirect(url_for('home'))
+
+@app.route('/register', methods=['GET','POST'])
+def register():
+    if current_user.is_authenticated:
+        flash('Already Logged In','success')
+        return redirect(url_for('home'))
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        user = User(name=form.name.data, role=form.role.data, gender=form.gender.data, age=form.age.data, phone=form.phone.data, email=form.email.data, address=form.address.data)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        flash('User registered successfully. You may login now', 'success')
+        return redirect(url_for('login'))
+    return render_template('register.html', title='Register', form=form)
+
+
 if __name__ == '__main__':
     app.run(debug=True)
 
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db}
+    return {'db': db, 'Contact': Contact, 'Hospital': Hospital, 'Patient': Patient, 'Bed': Bed, 'User':User}

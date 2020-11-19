@@ -2,7 +2,10 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from app import app
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 # import os
+from app import login
 
 
 # basedir = os.path.abspath(os.path.dirname(__file__))
@@ -120,7 +123,7 @@ class Patient(db.Model):
         return f"name: {self.name}\nadmit_date: {self.admit_date}"
 
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), index=True, unique=True)
     password_hash = db.Column(db.String(128))
@@ -130,3 +133,26 @@ class User(db.Model):
     phone = db.Column(db.String(10), index=True, unique=True)
     email = db.Column(db.String(50), index=True, unique=True)
     address = db.Column(db.String(120))
+
+    def __init__(self, name,  age, gender, role, phone, email, address):
+        self.name = name
+        self.age = age
+        self.gender = gender
+        self.role = role
+        self.phone = phone
+        self.email = email
+        self.address = address
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+
+    def __repr__(self):
+        return f"name: {self.name}, id: {self.id}, role: {self.role}\n"
+
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))

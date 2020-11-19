@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block navbar %}
+<!-- <li><a href="{{ url_for('patient_list') }}">Patients</a></li>
+<li><a href="{{ url_for('patient_add') }}">Add Patient</a></li> -->
+<li><a href="{{ url_for('login') }}">Login</a></li>
+{% endblock navbar %}
+
+{% block content %}
+
+<div class="patient_form">
+    <div class="container-contact100" id="patient_form">
+        <div class="wrap-contact100">
+            <form class="contact100-form validate-form needs-validation" method="POST" novalidate>
+                {{ form.hidden_tag() }}
+                <span class="contact100-form-title">
+                    {{title}}
+                </span>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+
+
+                <div class="wrap-input100 validate-input" data-validate="Name is required">
+                    <span class="label-input100">User Name</span>
+                    {{ form.name(class="input100 is-invalid") }}
+                    <span class="focus-input100"></span>
+                </div>
+                {% for error in form.name.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+
+                <div class="wrap-input100 validate-input" data-validate="Role is required">
+                    <span class="label-input100">Role</span>
+                    {{ form.role(class="selection-2") }}
+                    <span class="focus-input100"></span>
+                </div>
+                {% for error in form.role.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+
+                <div class="wrap-input100 input100-select">
+                    <span class="label-input100">Gender</span>
+                    <div>
+                        {{ form.gender(class="selection-2") }}
+                    </div>
+                    <span class="focus-input100"></span>
+                </div>
+                {% for error in form.gender.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+
+                <div class="wrap-input100 validate-input" data-validate="Password is required">
+                    <span class="label-input100">Password</span>
+                    {{ form.password(class="input100") }}
+                    <span class="focus-input100"></span>
+                </div>
+                {% for error in form.password.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+                
+                <div class="wrap-input100 input100-select" data-validate="Password is required">
+                    <span class="label-input100">Re-Enter Password</span>
+                    <div>
+                        {{ form.password2(class="input100") }}
+                    </div>
+                    <span class="focus-input100"></span>
+                </div>
+                {% for error in form.password2.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+
+                <div class="wrap-input100 validate-input" data-validate="Age is required">
+                    <span class="label-input100">Age</span>
+                    {{ form.age(class="input100") }}
+                    <span class="focus-input100"></span>
+                </div>
+                {% for error in form.age.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+
+
+                <div class="wrap-input100 validate-input" data-validate="Phone is required">
+                    <span class="label-input100">Phone number</span>
+                    {{ form.phone(class="input100") }}
+                    <span class="focus-input100"></span>
+                </div>
+                {% for error in form.phone.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+
+                <div class="wrap-input100 validate-input" data-validate="Address is required">
+                    <span class="label-input100">Address</span>
+                    {{ form.address(class="input100") }}
+                    <span class="focus-input100"></span>
+                </div>
+                {% for error in form.address.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+
+                <div class="wrap-input100 validate-input" data-validate="Email is required">
+                    <span class="label-input100">Address</span>
+                    {{ form.email(class="input100") }}
+                    <span class="focus-input100"></span>
+                </div>
+                {% for error in form.email.errors %}
+                <span style="color: red;">[{{ error }}]</span>
+                {% endfor %}
+
+                <div class="container-contact100-form-btn">
+                    <div class="wrap-contact100-form-btn">
+                        <div class="contact100-form-bgbtn"></div>
+                        {{ form.submit(class="contact100-form-btn") }}
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+    </div>
+
+
+
+    <div id="dropDownSelect1"></div>
+</div>
+<style>
+    #patient_form {
+        padding-top: 80px;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+    crossorigin="anonymous"></script>
+<!--===============================================================================================-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+    integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+    crossorigin="anonymous"></script>
+<script>
+    $(".selection-2").select2({
+        minimumResultsForSearch: 20,
+        dropdownParent: $('#dropDownSelect1')
+    });
+</script>
+
+{% endblock content %}

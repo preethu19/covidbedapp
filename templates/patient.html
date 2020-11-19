@@ -1,8 +1,13 @@
 {% extends "base.html" %}
 {% block navbar %}
-	    <li><a href="{{ url_for('patient_list') }}">Patients</a></li>
-	    <li><a href="{{ url_for('patient_add') }}">Add Patient</a></li>
-	    <li><a href="#careers">Logout</a></li>
+		{% if current_user.is_active %}
+		<li><a href="{{ url_for('patient_add') }}">Add Patient</a></li>
+		<li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
+		<li><a href="{{ url_for('logout') }}">Logout</a></li>
+		{% else %}
+		<li><a href="{{ url_for('login') }}">Login</a></li>
+		<li><a href="{{ url_for('register') }}">Register</a></li>
+		{% endif %}
 {% endblock navbar %}
 {% block content %}
 
@@ -89,8 +94,9 @@
 		</table>
 	</div>
 </div>
+
 <!-- Patient View -->
-<div class="patient__header">
+<div class="patient__header" id="tableview">
 	<label class="label__head">List of Patients Admitted</label></br></br>
 	<div class="patient__wrapper">
 
