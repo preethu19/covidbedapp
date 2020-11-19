@@ -500,36 +500,36 @@ background: linear-gradient(to bottom, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, 
 	text-align: center;
 }
 
-.table__wrapper{
+.table__header .table__wrapper{
 	display: flex;
     flex-direction: column;
     justify-content: center;
 
 }
 
-.table__content{
+.table__header .table__content{
 	margin-left: auto;
   	margin-right: auto;
   	margin-top: 20px;
 	text-align: center;
 }
 
-.table__content tr{
+.table__header .table__content tr{
 	border: 5px solid white;
 }
 
-.table__content td{
+.table__header .table__content td{
 	border: transparent;
 }
 
 
 
-td, tr{
+.table__header td,.table__header tr{
 	border: 2px solid black;
 	font-size: 14px;
 }
 
-td{
+.table__header td{
 	padding: 5px;
 }
 
@@ -537,7 +537,7 @@ td{
 text-align: center;
 }
 
-.patient__wrapper{
+.patient__header .patient__wrapper{
 	/*border: 5px solid grey;
 	border-radius: 20px;*/
 	/*background-color: skyblue;*/
@@ -547,13 +547,13 @@ text-align: center;
 	background: white;
 }
 
-.table__box{
+.patient__header .table__box{
 	width: 100%;
 	text-align: center;
 
 }
 
-th{
+.patient__header th{
 	border: 5px solid black;
 	background: black;
 	color: white;
@@ -562,39 +562,39 @@ th{
 
 }
 
-tr {
+.patient__header tr {
 	border: 5px solid white;
 }
 
-td{
+.patient__header td{
 	border: 5px solid transparent;
 }
 
-td a{
+.patient__header td a{
 	color: black;
 }
 
-tr:nth-child(even) {background: #CCC}
-tr:nth-child(odd) {background: #FFF}
+.patient__header tr:nth-child(even) {background: #CCC}
+.patient__header tr:nth-child(odd) {background: #FFF}
 
-tr:hover{
+.patient__header tr:hover{
 	background: black;
 	color: white;
 	font-weight: bold;
 }
 
-tr:hover td a{
+.patient__header tr:hover td a{
 	color: white;
 }
 
-.label__head{
+.patient__header .label__head{
 	font-size: 40px;
 	color: white;
 	font-weight: bold;
 	font-family: "Times New Roman", Times, serif;
 }
 
-.report__head{
+.patient__header .report__head{
 	background: black;
 	color: white;
 	font-weight: bold;

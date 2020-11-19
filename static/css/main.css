@@ -1,0 +1,279 @@
+
+/* ==========================================================================
+   #FONT
+   ========================================================================== */
+   .wrapper__main .font-robo {
+    font-family: "Roboto", "Arial", "Helvetica Neue", sans-serif;
+  }
+  
+  .wrapper__main .font-poppins {
+    font-family: "Poppins", "Arial", "Helvetica Neue", sans-serif;
+  }
+  
+  .wrapper__main .font-opensans {
+    font-family: "Open Sans", "Arial", "Helvetica Neue", sans-serif;
+  }
+  
+  /* ==========================================================================
+     #GRID
+     ========================================================================== */
+  
+  
+ 
+  
+
+
+
+     .wrapper__main body,
+  h1, h2, h3, h4, h5, h6,
+  blockquote, p, pre,
+  dl, dd, ol, ul,
+  figure,
+  hr,
+  fieldset, legend {
+    margin: 0;
+    padding: 0;
+  }
+  
+
+
+
+  .wrapper__main body {
+    font-family: "Open Sans", "Arial", "Helvetica Neue", sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    width:100%;
+    background: #0f0c29;  /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #24243e, #302b63, #0f0c29);  /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #24243e, #302b63, #0f0c29); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+    
+  }
+  
+  .wrapper__main h1, h2, h3, h4, h5, h6 {
+    font-weight: 400;
+  }
+  
+  .wrapper__main h1 {
+    font-size: 36px;
+  }
+  
+  .wrapper__main h2 {
+    font-size: 30px;
+  }
+  
+  .wrapper__main h3 {
+    font-size: 24px;
+  }
+  
+  .wrapper__main h4 {
+    font-size: 18px;
+  }
+  
+  .wrapper__main h5 {
+    font-size: 15px;
+  }
+  
+  .wrapper__main h6 {
+    font-size: 13px;
+  }
+  
+  
+  
+  /* ==========================================================================
+     #SPACING
+     ========================================================================== */
+     .wrapper__main .p-t-100 {
+    padding-top: 100px;
+  }
+  
+  .wrapper__main .p-t-130 {
+    padding-top: 130px;
+  }
+  
+  .wrapper__main .p-t-180 {
+    padding-top: 180px;
+  }
+  
+  .wrapper__main .p-t-45 {
+    padding-top: 45px;
+  }
+  
+  .wrapper__main .p-t-20 {
+    padding-top: 20px;
+  }
+  
+  .wrapper__main .p-t-15 {
+    padding-top: 15px;
+  }
+  
+  .wrapper__main .p-t-10 {
+    padding-top: 10px;
+  }
+  
+  .wrapper__main .p-t-30 {
+    padding-top: 30px;
+  }
+  
+  .wrapper__main .p-b-100 {
+    padding-bottom: 100px;
+  }
+  
+  .wrapper__main .p-b-50 {
+    padding-bottom: 50px;
+  }
+  
+  .wrapper__main .m-r-45 {
+    margin-right: 45px;
+  }
+  
+  .wrapper__main .m-r-55 {
+    margin-right: 55px;
+  }
+  
+  .wrapper__main .m-b-55 {
+    margin-bottom: 55px;
+  }
+  
+  /* ==========================================================================
+     #WRAPPER
+     ========================================================================== */
+  .wrapper__main {
+    margin: 0 20px;
+  }
+  
+  
+  
+  /* ==========================================================================
+     #TITLE
+     ========================================================================== */
+     .wrapper__main .title {
+    font-size: 24px;
+    text-transform: uppercase;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+  }
+  
+  /* ==========================================================================
+     #CARD
+     ========================================================================== */
+     .wrapper__main .card {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background: #fff;
+    height: 400px;
+  }
+  
+  .wrapper__main .card-5 {
+    background: #fff;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    -moz-box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+    box-shadow: 0px 8px 20px 0px rgba(0, 0, 0, 0.15);
+  }
+  
+  .wrapper__main .card-5 .card-heading {
+    padding: 20px 0;
+    background: #1a1a1a;
+    -webkit-border-top-left-radius: 10px;
+    -moz-border-radius-topleft: 10px;
+    border-top-left-radius: 10px;
+    -webkit-border-top-right-radius: 10px;
+    -moz-border-radius-topright: 10px;
+    border-top-right-radius: 10px;
+  }
+  
+  .wrapper__main .card-5 .card-body {
+    padding: 52px 85px;
+    padding-bottom: 73px;
+    }
+  
+  
+  @media (max-width: 767px) {
+    .wrapper__main .card-5 .card-body {
+      padding: 40px 30px;
+      padding-bottom: 50px;
+    }
+  }
+  
+
+  .wrapper__main .table{
+    border-collapse: collapse;
+    border-spacing: 0;
+    background-color: #f5f5f5;
+    table-layout: fixed;
+    width: 100%;
+
+}
+
+
+.wrapper__main tr:nth-child(even){
+    background-color: #f2f2f2;
+}
+
+.wrapper__main tr:nth-child(even):hover{
+  background-color: black;
+  color: white;
+  font-weight: bold;
+}
+
+.wrapper__main tr:nth-child(odd):hover{
+  background-color: black;
+  color: white;
+  font-weight: bold;
+}
+
+.wrapper__main .table__row:nth-child(even){
+    background-color: #e5e5e5;
+}
+
+
+
+.wrapper__main .table__head{
+    text-align: center;
+}
+
+.wrapper__main .table__cell{
+    padding: 8px;
+}
+
+.wrapper__main .table__head{
+  color: #f5f5f5;
+  background-color: black;
+  
+}
+
+.wrapper__main .table__wrapper{
+  padding-top: 50px;
+}
+
+.wrapper__main .label__head{
+	font-size: 40px;
+	color: white;
+	font-weight: bold;
+  font-family: "Times New Roman", Times, serif;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.wrapper__main .row{
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.wrapper__main .table__main #tr{
+  border-top: none;
+  border:none;
+}
+
+.wrapper__main .table{
+  font-size: 14px;
+}
+
+.wrapper__main{
+  padding-top: 40px;
+}

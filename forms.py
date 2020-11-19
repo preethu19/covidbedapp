@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, IntegerField, SelectField, PasswordField, BooleanField
+from wtforms import StringField, SubmitField, TextAreaField, IntegerField, SelectField, PasswordField, BooleanField, RadioField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from models import User
 
@@ -56,6 +56,14 @@ class RegistrationForm(FlaskForm):
     def validate_phone(self, phone):
         if not 5000000000 < phone.data < 9999999999:
             raise ValidationError('Enter valid phone')
+
+class InfoForm(FlaskForm):
+    name = SelectField('Name', choices=[('Please Select','Please Select'),('Preetham emergency','Preetham emergency'),('Nandan clinic','Nandan clinic'),('Siddarth multispeciality','Siddarth multispeciality'),('Father Muller Hospital','Father Muller Hospital')])
+    district = SelectField('District: ', choices=[('Please Select','Please Select'),('D.K','D.K'),('Banglore','Banglore')])
+    state = SelectField('State: ', choices=[('Please Select','Please Select'),('Andra','Andra'),('Karnataka','Karnataka')])
+    area = SelectField('Area: ', choices=[('Please Select','Please Select'),('badyar','badyar'),('mattikere','mattikere')])
+    beds = SelectField('Sort bed results by ', validators=[DataRequired()], choices=[('total_beds','total_beds'),('available_beds','available_beds'),('available_ward_beds','available_ward_beds'),('available_ward_beds_with_oxygen','available_ward_beds_with_oxygen'),('available_icu_beds','available_icu_beds'),('available_icu_beds_with_oxygen','available_icu_beds_with_oxygen')], default='total_beds')
+    submit = SubmitField('Search')
 
 
 

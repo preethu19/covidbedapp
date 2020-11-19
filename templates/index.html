@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block navbar %}
+	<li><a href="#about">About</a></li>
+	<li><a href="#contact">Contact</a></li>
+	<li><a href="{{ url_for('patient_list') }}">Patients</a></li>
+	{% if current_user.is_active %}
+	<li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
+	<li><a href="{{ url_for('logout') }}">Logout</a></li>
+	{% else %}
+	<li><a href="{{ url_for('login') }}">Login</a></li>
+	<li><a href="{{ url_for('register') }}">Register</a></li>
+	{% endif %}
+{% endblock navbar %}
+
+
+{% block content %}
+<div class="wrapper__main">
+    <div class="page-wrapper bg-gra-03 p-t-45 p-b-50">
+        <div class="wrapper wrapper--w790">
+            <div class="card card-5">
+                <div class="card-heading">
+                    <h2 class="title">Search Here for Hospitals</h2>
+                </div>
+                <div class="card-body">
+                    
+                    <div style="padding-left: 0px;" class="container">
+                        
+                            <div class="col-md-12">
+                                <form href="/" method="POST">
+                                    {{ form.hidden_tag() }}
+                                    <div class="row">
+                                        <div>
+                                            <div style="margin-top: 10px;" class="form-group">
+                                                <label for="state" style="margin-left: 30px;" class="form-label "><b>State</b></label>
+                                                <span class = "col-sm-4">
+                                                    {{ form.state(id="state",class="custom-select selectFilter")}}
+                                                </span>
+                                            </div>
+                                        </div>  
+
+                                        <div style="margin-left: 20px;">
+                                            <div style="margin-top: 10px;" class="form-group">
+                                                <label for="district" style="margin-left: 30px;" class="form-label"><b>District</b></label>
+                                                <span class = "col-sm-4">
+                                                    {{ form.district(id="district",class="custom-select selectFilter")}}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div style="margin-left: 20px;">
+                                            <div style="margin-top: 10px;" class="form-group">
+                                                <label for="area" style="margin-left: 30px;" class="form-label "><b>Hospital Area</b></label>
+                                                <span class = "col-sm-4">
+                                                    {{ form.area(id="area",class="custom-select selectFilter")}}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <div style="margin-top: 10px;" class="form-group">
+                                                <label for="na" style="margin-left: 30px;" class="form-label "><b>Hospital Name</b></label>
+                                                <span class = "col-sm-4">
+                                                    {{ form.name(id="na",class="custom-select selectFilter") }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    <div style="margin-left: 20px;">
+                                        <div style="margin-top: 10px;" class="form-group">
+                                            <label class="form-label" style="margin-left: 30px;"><b>Sort By</b></label>
+                                            <span class = "col-sm-4">
+                                                {{ form.beds(class="custom-select selectFilter") }}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                    <div style="text-align: center;">
+                                        {{form.submit(class="btn btn-secondary")}}
+                                    </div>
+                                    
+                                </form>  
+                            </div>   
+                        </div>
+                    </div>                                 
+                </div>
+            </div>
+        
+  <div class="table__main">
+    <div class="table__wrapper">
+        <h1 class="label__head">Hospital List</h1>
+        <table class="table">
+
+            
+            <tr class="table__head text-break">
+                <th class="table__cell" width="80px">Name</th>
+                <th class="table__cell" width="80px">Area</th>
+                <th class="table__cell" width="80px">district</th>
+                <th class="table__cell" width="80px">state</th>
+                <th class="table__cell" width="80px">total beds</th>
+                <th class="table__cell" width="90px">available beds</th>
+                <th class="table__cell" width="90px">total ward beds</th>
+                <th class="table__cell" width="90px">available ward beds</th>
+                <th class="table__cell" width="90px">total ward beds with oxygen</th>
+                <th class="table__cell" width="90px">available ward beds with oxygen</th>
+                <th class="table__cell" width="90px">total icu beds</th>
+                <th class="table__cell" width="90px">available icu beds</th>
+                <th class="table__cell" width="90px">total icu beds with oxygen</th>
+                <th class="table__cell" width="90px">available icu beds with oxygen</th>
+            </tr>
+
+            {% for row in hospitals.items %}  
+            <tr style="text-align: center;" class="table__row">
+                <td class="table__cell">{{row.name}}</td>
+                <td class="table__cell">{{row.area}}</td>
+                <td class="table__cell">{{row.district}}</td>
+                <td class="table__cell">{{row.state}}</td>
+                <td class="table__cell">{{row.total_beds}}</td>
+                <td class="table__cell">{{row.available_beds}}</td>
+                <td class="table__cell">{{row.total_ward_beds}}</td>
+                <td class="table__cell">{{row.available_ward_beds}}</td>
+                <td class="table__cell">{{row.total_ward_beds_with_oxygen}}</td>
+                <td class="table__cell">{{row.available_ward_beds_with_oxygen}}</td>
+                <td class="table__cell">{{row.total_icu_beds}}</td>
+                <td class="table__cell">{{row.available_icu_beds}}</td>
+                <td class="table__cell">{{row.total_icu_beds_with_oxygen}}</td>
+                <td class="table__cell">{{row.available_icu_beds_with_oxygen}}</td>
+            </tr>   
+            {% endfor %}
+
+        </table>
+
+        <div style="text-align: center;">
+        {% for page_num in hospitals.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                {% if hospitals.page == page_num  %}
+                    <a  class="btn btn-light mb-4" href="{{url_for('hospital', page=page_num, name=name, district=district, state=state, area=area, beds=beds) }}">{{ page_num }}</a>
+                {% else %}
+                    <a  class="btn btn-outline-light mb-4" href="{{ url_for('hospital', page=page_num, name=name, district=district, state=state, area=area, beds=beds) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+            <span style="color: white;">...</span>
+            {% endif %}
+        {% endfor %}
+            </div>
+
+    </div>
+      
+  </div>
+      
+        
+        <script src="http://code.jquery.com/jquery.min.js"></script>
+	<script>
+	$(".selectFilter").on("change",function(){var e=$(this).data("target"),i=$(this).find(":selected").data("ref");$("select."+e).val("-1"),null==i?$("select."+e).find("option").each(function(){console.log("inside undefined"),$(this).removeAttr("disabled hidden")}):$("select."+e).find("option").each(function(){var e=$(this).data("belong"),t=$(this).val();i!=e&&-1!=t?($(this).prop("disabled",!0),$(this).prop("hidden",!0)):($(this).prop("disabled",!1),$(this).prop("hidden",!1))})});
+	</script>
+	<script>
+		$(document).ready(function(){
+			$("#tableSearch").on("keyup", function() {
+				var value = $(this).val().toLowerCase();
+				$("#myTable tr").filter(function() {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+				});
+			});
+		});
+
+    </script>
+</div>
+        
+</div>
+    
+{% endblock content %}
