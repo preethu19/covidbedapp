@@ -1,18 +1,11 @@
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+from sqlalchemy.orm import backref
 from app import app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-# import os
 from app import login
-
-
-# basedir = os.path.abspath(os.path.dirname(__file__))
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-#     os.path.join(basedir, 'data.sqlite')
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SECRET_KEY'] = 'mysecret'
 
 
 db = SQLAlchemy(app)
@@ -53,6 +46,7 @@ class Hospital(db.Model):
     total_icu_beds_with_oxygen = db.Column(db.Integer, nullable=False)
     available_icu_beds_with_oxygen = db.Column(db.Integer, nullable=False)
     beds = db.relationship('Bed', backref='hospital', lazy=True)
+    users = db.relationship('User', backref='hospital', lazy=True)
 
     def __init__(self, name, area, district, state, total_beds, available_beds,
                  total_ward_beds, available_ward_beds, total_ward_beds_with_oxygen,
@@ -78,13 +72,14 @@ class Hospital(db.Model):
 
 
 class Bed(db.Model):
+    __tablename__ = "bed"
     id = db.Column(db.Integer, primary_key=True)
     bed_number = db.Column(db.Integer, nullable=False)
     bed_type = db.Column(db.String(100), nullable=False)
     cost = db.Column(db.Integer, nullable=False)
-    hospital_id = db.Column(db.Integer, db.ForeignKey(
-        'hospital.id'), nullable=False)
+    hospital_id = db.Column(db.Integer, db.ForeignKey('hospital.id'), nullable=False)
     patients = db.relationship('Patient', backref='bed', lazy=True)
+    bed_incharge = db.relationship('InCharge', backref='bed_incharge', lazy=True)
 
     def __init__(self, bed_number, bed_type, cost, hospital):
         self.bed_number = bed_number
@@ -97,6 +92,7 @@ class Bed(db.Model):
 
 
 class Patient(db.Model):
+    __tablename__ = "patient"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     age = db.Column(db.Integer, nullable=False)
@@ -108,6 +104,7 @@ class Patient(db.Model):
     address = db.Column(db.Text, nullable=False)
     blood_group = db.Column(db.String(20), nullable=False)
     bed_id = db.Column(db.Integer, db.ForeignKey('bed.id'), nullable=False)
+    patient_contact = db.relationship('PatientContact', backref='patient_contact', lazy=True)
 
     def __init__(self, name, age, gender, status, phone, address, blood_group, bed):
         self.name = name
@@ -122,6 +119,10 @@ class Patient(db.Model):
     def __repr__(self):
         return f"name: {self.name}\nadmit_date: {self.admit_date}"
 
+class PatientContact(db.Model):
+    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False, primary_key=True)
+    contact = db.Column(db.String(250))
+
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -133,6 +134,9 @@ class User(UserMixin, db.Model):
     phone = db.Column(db.String(10), index=True, unique=True)
     email = db.Column(db.String(50), index=True, unique=True)
     address = db.Column(db.String(120))
+    hospital_id = db.Column(db.Integer, db.ForeignKey('hospital.id'))
+    user_incharge = db.relationship('InCharge', backref='user_incharge', lazy=True)
+
 
     def __init__(self, name,  age, gender, role, phone, email, address):
         self.name = name
@@ -151,6 +155,11 @@ class User(UserMixin, db.Model):
 
     def __repr__(self):
         return f"name: {self.name}, id: {self.id}, role: {self.role}\n"
+
+
+class InCharge(db.Model):
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, primary_key=True)
+    bed_id = db.Column(db.Integer, db.ForeignKey('bed.id'), nullable=False, primary_key=True)
 
 
 @login.user_loader

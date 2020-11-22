@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 {% block navbar %}
-	<li><a href="#about">About</a></li>
-	<li><a href="#contact">Contact</a></li>
 	<li><a href="{{ url_for('patient_list') }}">Patients</a></li>
 	{% if current_user.is_active %}
 	<li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>

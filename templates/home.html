@@ -3,9 +3,9 @@
 	<li><a href="#about">About</a></li>
 	<li><a href="#contact">Contact</a></li>
 	{% if current_user.is_active %}
+		<li><a href="{{ url_for('patient_list') }}">Patients</a></li>
 		<li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
 		<li><a href="{{ url_for('logout') }}">Logout</a></li>
-		<li><a href="{{ url_for('patient_list') }}">Patients</a></li>
 	{% else %}
 		<li><a href="{{ url_for('login') }}">Login</a></li>
 	{% endif %}
