@@ -16,8 +16,8 @@ login = LoginManager(app)
 login.login_view = 'login'
 
 from models import db
-from forms import ContactForm, PatientBedForm, LoginForm, RegistrationForm, InfoForm
-from models import Contact, Hospital, Patient, Bed, User
+from forms import ContactForm, PatientBedForm, LoginForm, RegistrationForm, InfoForm, addhospitalform, DoctorForm
+from models import Contact, Hospital, Patient, Bed, User, Doctor
 
 @app.route('/', methods=['GET','POST'])
 def home():
@@ -29,8 +29,6 @@ def home():
         c = Contact(name, phone, content)
         db.session.add(c)
         db.session.commit()
-        contacts = Contact.query.all()
-        print(contacts)
         return redirect(url_for('home'))
     else:
         print('Home loaded')
@@ -320,16 +318,83 @@ def hospital():
     form.beds.data = beds
     return render_template('index.html', form=form, name=name, district=district, state=state, area=area, beds=beds, hospitals=data)
 
+
+@app.route('/hospital/add', methods=['POST', 'GET'])
+def addhospital():
+    form = addhospitalform()   
+    if request.method=='POST' and form.validate_on_submit():
+        hospital = Hospital(name=form.hospitalname.data,area=form.area.data,\
+                            district=form.district.data, phone=form.phone.data, total_beds=form.total_beds.data,\
+                            state=form.state.data,total_ward_beds=form.total_ward_beds.data,\
+                            total_ward_beds_with_oxygen=form.total_ward_beds_with_oxygen.data,total_icu_beds=form.total_icu_beds.data,\
+                            total_icu_beds_with_oxygen=form.total_icu_beds_with_oxygen.data,available_beds=form.total_beds.data,\
+                            available_ward_beds=form.total_ward_beds.data,available_ward_beds_with_oxygen=form.total_ward_beds_with_oxygen.data,\
+                            available_icu_beds=form.total_icu_beds.data,available_icu_beds_with_oxygen=form.total_icu_beds_with_oxygen.data)
+        db.session.add(hospital)
+        user = User(name=form.user.data, role='hospital', hospital=hospital)
+        user.set_password(form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        return redirect(url_for('home'))
+    for error in form.errors:
+        print(error)
+        if error == 'user':
+            flash('Use different username', 'danger')
+        if error == 'password2':
+            flash('Password Mismatch', 'danger')
+    return render_template('hospitaladd.html', form=form, title="Add Hospital")
+
+@app.route("/hospital/<int:hospital_id>/edit", methods=['GET', 'POST'])
+def edithospital(hospital_id):
+    hospital = Hospital.query.get_or_404(hospital_id)
+    form = addhospitalform()
+    if request.method=='POST' and form.validate_on_submit():
+        if hospital.total_beds <= form.total_beds.data and hospital.total_ward_beds <= form.total_ward_beds.data and\
+        hospital.total_ward_beds_with_oxygen <= form.total_ward_beds_with_oxygen.data and hospital.total_icu_beds <= form.total_icu_beds.data and\
+        hospital.total_icu_beds_with_oxygen <= form.total_icu_beds_with_oxygen.data:                                                                    
+            db.session.query(Hospital).filter_by(id=hospital_id).update({Hospital.total_beds: form.total_beds.data, Hospital.total_ward_beds: form.total_ward_beds.data,\
+                                                                  Hospital.total_ward_beds_with_oxygen: form.total_ward_beds_with_oxygen.data, Hospital.total_icu_beds: form.total_icu_beds.data,\
+                                                                  Hospital.total_icu_beds_with_oxygen:form.total_icu_beds_with_oxygen.data}, synchronize_session = False) 
+            db.session.commit()
+            return redirect(url_for('hospital')) 
+        else:
+            return redirect(url_for('home'))
+    else:
+        form.hospitalname.data = hospital.name
+        form.area.data = hospital.area
+        form.district.data = hospital.district
+        form.state.data = hospital.state
+        form.phone.data = hospital.phone
+        form.total_beds.data = hospital.total_beds
+        form.total_ward_beds.data = hospital.total_ward_beds
+        form.total_ward_beds_with_oxygen.data = hospital.total_ward_beds_with_oxygen
+        form.total_icu_beds.data = hospital.total_icu_beds
+        form.total_icu_beds_with_oxygen.data = hospital.total_icu_beds_with_oxygen
+    return render_template('hospitaledit.html',hospital=hospital, form=form, title="Edit Hospital")
+
+@app.route('/doctors/new', methods=['GET', 'POST'])
+@login_required
+def doctor_add():
+    form = DoctorForm()
+    if request.method == 'POST' and form.validate_on_submit():
+        doctor = Doctor(name=form.name.data, age=form.age.data, gender=form.gender.data, hospital=current_user.hospital)
+        db.session.add(doctor)
+        db.session.commit()
+        return redirect('home')
+    return render_template('doctor_add.html', form=form)
+
+
 @app.route('/profile')
 @login_required
 def profile():
     return redirect(url_for('home'))
 
 @app.route('/patients')
+@login_required
 def patient_list():
-    hospital = Hospital.query.first()
+    hospital = current_user.hospital
     page = request.args.get('page', 1, type=int)
-    patients = Patient.query.order_by(Patient.admit_date.desc()).paginate(per_page=10, page=page)
+    patients = Patient.query.join(Bed).filter(Bed.id==Patient.bed_id).join(Hospital).filter(Bed.hospital_id==Hospital.id, Hospital.id==hospital.id).order_by(Patient.admit_date.desc()).paginate(per_page=1, page=page)
     return render_template('patient.html', patients=patients, hospital=hospital)
 
 
@@ -340,12 +405,40 @@ def patient_add():
     if request.method == 'POST' and form.validate_on_submit() and form.gender.data != 'choose gender' and\
             form.status.data != 'choose patient status' and form.blood_group.data != 'choose blood group'\
             and form.bed_type.data != 'choose bed type':
-        h = Hospital.query.first()
+        h = current_user.hospital
+        if form.bed_type.data=='ward':
+            if h.available_ward_beds<=h.total_ward_beds:
+                h.available_ward_beds -= 1
+                h.available_beds -= 1
+            else:
+                flash('Ward beds are filled', 'danger')
+                redirect(url_for('patient_add'))
+        elif form.bed_type.data=='ward with oxygen':
+            if h.available_ward_beds_with_oxygen<=h.total_ward_beds_with_oxygen:
+                h.available_ward_beds_with_oxygen -= 1
+                h.available_beds -= 1
+            else:
+                flash('Ward beds with oxygen are filled', 'danger')
+                redirect(url_for('patient_add'))
+        elif form.bed_type.data=='icu':
+            if h.available_icu_beds<=h.total_icu_beds:
+                h.available_icu_beds -= 1
+                h.available_beds -= 1
+            else:
+                flash('ICU beds are filled', 'danger')
+                redirect(url_for('patient_add'))
+        elif form.bed_type.data=='icu with oxygen':
+            if h.available_icu_beds_with_oxygen<=h.total_icu_beds_with_oxygen:
+                h.available_icu_beds_with_oxygen -= 1
+                h.available_beds -= 1
+            else:
+                flash('ICU beds with oxygen are filled', 'danger')
+                redirect(url_for('patient_add'))
+        d = Doctor.query.filter_by(name = form.doctor_name.data, hospital=current_user.hospital).first()
         b = Bed(bed_number=form.bed_number.data, bed_type=form.bed_type.data, cost=form.cost.data, hospital=h)
         db.session.add(b)
-        p = Patient(name=form.name.data, age=form.age.data, gender=form.gender.data, status=form.status.data, phone=form.phone.data, address=form.address.data, blood_group=form.blood_group.data, bed=b)
+        p = Patient(name=form.name.data, age=form.age.data, gender=form.gender.data, status=form.status.data, phone=form.phone.data, address=form.address.data, blood_group=form.blood_group.data, bed=b, doctor=d)
         db.session.add(p)
-
         db.session.commit()
         print('Commit successful')
         flash('Patient Data is added', 'success')
@@ -359,6 +452,7 @@ def patient_add():
 @login_required
 def patient_update(patient_id):
     form = PatientBedForm()
+    h = current_user.hospital
     p = Patient.query.get_or_404(patient_id)
     if request.method == 'POST' and form.validate_on_submit() and form.gender.data != 'choose gender' and \
             form.status.data != 'choose patient status' and form.blood_group.data != 'choose blood group' \
@@ -370,11 +464,24 @@ def patient_update(patient_id):
         p.phone = form.phone.data
         p.blood_group = form.blood_group.data
         p.address = form.address.data
+        p.doctor = Doctor.query.filter_by(name = form.doctor_name.data, hospital=current_user.hospital).first_or_404()
         p.bed.bed_number = form.bed_number.data
         p.bed.bed_type = form.bed_type.data
         p.bed.cost = form.cost.data
         if (not p.discharge_date) and form.status.data == 'discharged':
             p.discharge_date = datetime.utcnow()
+            if form.bed_type.data=='ward':
+                h.available_ward_beds += 1
+                h.available_beds += 1
+            elif form.bed_type.data=='ward with oxygen':
+                h.available_ward_beds_with_oxygen += 1
+                h.available_beds += 1
+            elif form.bed_type.data=='icu':
+                h.available_icu_beds += 1
+                h.available_beds += 1
+            elif form.bed_type.data=='icu with oxygen':
+                h.available_icu_beds_with_oxygen += 1
+                h.available_beds += 1
         db.session.commit()
         flash('Patient Data is updated', 'success')
     elif request.method == 'POST':
@@ -389,6 +496,7 @@ def patient_update(patient_id):
     form.bed_number.data = p.bed.bed_number
     form.bed_type.data = p.bed.bed_type
     form.cost.data = p.bed.cost
+    form.doctor_name.data = p.doctor.name
     admit_date = p.admit_date
     discharge_date = p.discharge_date
     return render_template('patient_update.html', form=form, admit_date=admit_date, discharge_date=discharge_date)
@@ -403,6 +511,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(name = form.name.data).first()
+        print(user)
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password','danger')
             return redirect(url_for('login'))

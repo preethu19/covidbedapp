@@ -23,13 +23,22 @@
 	  <label class="menu-icon" for="menu-btn"><span class="navicon"></span></label>
 	  <ul class="menu">
 		<li><a href="{{ url_for('home') }}">Home</a></li>
-		<li><a href="{{ url_for('hospital') }}">List Of Hospitals</a></li>
           {% block navbar %}
           {% endblock %}
 	  </ul>
 	</header>
 </div>
-
+<div class="container">
+	{% with messages = get_flashed_messages(with_categories=true) %}
+    	{% if messages %}
+        	{% for category, message in messages %}
+            	<div class="alert alert-{{ category }}">
+                    {{  message }}
+                </div>
+        	{% endfor %}
+        {% endif %}
+    {% endwith %}
+</div>
 {% block content %}
 {% endblock %}
 

@@ -533,6 +533,8 @@ background: linear-gradient(to bottom, #FFFFFF, #FFEFBA); /* W3C, IE 10+/ Edge, 
 	padding: 5px;
 }
 
+
+
 .patient__header{
 text-align: center;
 }
@@ -615,4 +617,85 @@ body{
     background: #0f0c29;  /* fallback for old browsers */
     background: -webkit-linear-gradient(to right, #24243e, #302b63, #0f0c29);  /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(to right, #24243e, #302b63, #0f0c29); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+
+.table__header .table{
+  border-collapse: collapse;
+  border-spacing: 0;
+  background-color: #f5f5f5;
+  table-layout: fixed;
+  width: 100%;
+
+}
+
+.table__header .report__head{
+  background-color: black;
+  color: white;
+}
+.table__header tr:nth-child(even){
+  background-color: #f2f2f2;
+}
+
+.table__header tr:nth-child(odd){
+  background-color:white;
+}
+
+.table__header tr:nth-child(even):hover{
+background-color: black;
+color: white;
+font-weight: bold;
+}
+
+.table__header tr:nth-child(odd):hover{
+background-color: black;
+color: white;
+font-weight: bold;
+}
+
+.table__header .table__row:nth-child(even){
+  background-color: #e5e5e5;
+}
+
+
+
+.table__header .table__head{
+  text-align: center;
+}
+
+.table__header .table__cell{
+  padding: 8px;
+}
+
+.table__header .table__head{
+color: #f5f5f5;
+background-color: black;
+
+}
+
+.table__header .table__wrapper{
+padding-top: 50px;
+}
+
+.table__header .label__head{
+font-size: 40px;
+color: white;
+font-weight: bold;
+font-family: "Times New Roman", Times, serif;
+text-align: center;
+padding-bottom: 20px;
+}
+
+.table__header .row{
+display: grid;
+grid-template-columns: 1fr 1fr 1fr;
+}
+
+.table__header .table__main #tr{
+border-top: none;
+border:none;
+}
+
+.table__header .table{
+font-size: 14px;
 }

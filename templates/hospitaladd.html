@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block navbar %}
+    
+    
+{% endblock navbar %}
+{% block content %}
+
+	<div class="patient_form">
+		<div class="container-contact100" id="patient_form">
+			<div class="wrap-contact100">
+			<form class="contact100-form validate-form needs-validation" method="POST" novalidate>
+                {{ form.hidden_tag() }}
+				<span class="contact100-form-title">
+					Add Hospital
+				</span>
+				{% with messages = get_flashed_messages(with_categories=true) %}
+					{% if messages %}
+						{% for category, message in messages %}
+							<div class="alert alert-{{ category }}">
+								{{ message }}
+							</div>
+						{% endfor %}
+					{% endif %}
+				{% endwith %}
+				<div class="wrap-input100 validate-input" data-validate="Name is required">
+                    <span class="label-input100">Hospital Name</span>
+                    {{ form.hospitalname(class="input100") }}
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate="Name is required">
+					<span class="label-input100">Area</span>
+					{{ form.area(class="input100") }}
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">District</span>
+					<div>
+						{{ form.district(class="input100") }}
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">State</span>
+					<div>
+						{{ form.state(class="input100") }}
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">Phone</span>
+					<div>
+						{{ form.phone(class="input100") }}
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">User Name</span>
+					<div>
+						{{ form.user(class="input100") }}
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">Password</span>
+					<div>
+						{{ form.password(class="input100") }}
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">Confirm Password</span>
+					<div>
+						{{ form.password2(class="input100") }}
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate="Name is required">
+					<span class="label-input100">Total Beds</span>
+					{{ form.total_beds(class="input100") }}
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate = "Message is required">
+					<span class="label-input100">Total Ward Beds</span>
+					{{ form.total_ward_beds(class="input100") }}
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="wrap-input100 validate-input" data-validate="Name is required">
+					<span class="label-input100">Total Ward Beds with Oxygen</span>
+					{{ form.total_ward_beds_with_oxygen(class="input100") }}
+					<span class="focus-input100"></span>
+                </div>
+
+				<div class="wrap-input100 validate-input" data-validate="Name is required">
+					<span class="label-input100">Total ICU Beds</span>
+					{{ form.total_icu_beds(class="input100") }}
+					<span class="focus-input100"></span>
+                </div>
+                
+                <div class="wrap-input100 validate-input" data-validate="Name is required">
+					<span class="label-input100">Total ICU Beds with Oxygen</span>
+					{{ form.total_icu_beds_with_oxygen(class="input100") }}
+					<span class="focus-input100"></span>
+				</div>
+
+				<div class="container-contact100-form-btn">
+					<div class="wrap-contact100-form-btn">
+						<div class="contact100-form-bgbtn"></div>
+							{{ form.submit(class="contact100-form-btn") }}
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+
+
+	<div id="dropDownSelect1"></div>
+</div>
+<style>
+	#patient_form{
+  padding-top: 80px;
+}
+
+</style>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+<!--===============================================================================================-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous"></script>
+	<script>
+		$(".selection-2").select2({
+			minimumResultsForSearch: 20,
+			dropdownParent: $('#dropDownSelect1')
+		});
+	</script>
+
+{% endblock content %}

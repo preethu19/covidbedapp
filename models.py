@@ -35,6 +35,7 @@ class Hospital(db.Model):
     area = db.Column(db.String(100), nullable=False)
     district = db.Column(db.String(100), nullable=False)
     state = db.Column(db.String(100), nullable=False)
+    phone = db.Column(db.Integer, nullable=False)
     total_beds = db.Column(db.Integer, nullable=False)
     available_beds = db.Column(db.Integer, nullable=False)
     total_ward_beds = db.Column(db.Integer, nullable=False)
@@ -47,8 +48,9 @@ class Hospital(db.Model):
     available_icu_beds_with_oxygen = db.Column(db.Integer, nullable=False)
     beds = db.relationship('Bed', backref='hospital', lazy=True)
     users = db.relationship('User', backref='hospital', lazy=True)
+    doctors = db.relationship('Doctor', backref='hospital', lazy=True)
 
-    def __init__(self, name, area, district, state, total_beds, available_beds,
+    def __init__(self, name, area, district, state, phone, total_beds, available_beds,
                  total_ward_beds, available_ward_beds, total_ward_beds_with_oxygen,
                  available_ward_beds_with_oxygen, total_icu_beds, available_icu_beds,
                  total_icu_beds_with_oxygen, available_icu_beds_with_oxygen):
@@ -56,6 +58,7 @@ class Hospital(db.Model):
         self.area = area
         self.district = district
         self.state = state
+        self.phone = phone
         self.total_beds = total_beds
         self.available_beds = available_beds
         self.total_ward_beds = total_ward_beds
@@ -79,7 +82,6 @@ class Bed(db.Model):
     cost = db.Column(db.Integer, nullable=False)
     hospital_id = db.Column(db.Integer, db.ForeignKey('hospital.id'), nullable=False)
     patients = db.relationship('Patient', backref='bed', lazy=True)
-    bed_incharge = db.relationship('InCharge', backref='bed_incharge', lazy=True)
 
     def __init__(self, bed_number, bed_type, cost, hospital):
         self.bed_number = bed_number
@@ -104,9 +106,9 @@ class Patient(db.Model):
     address = db.Column(db.Text, nullable=False)
     blood_group = db.Column(db.String(20), nullable=False)
     bed_id = db.Column(db.Integer, db.ForeignKey('bed.id'), nullable=False)
-    patient_contact = db.relationship('PatientContact', backref='patient_contact', lazy=True)
+    doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
 
-    def __init__(self, name, age, gender, status, phone, address, blood_group, bed):
+    def __init__(self, name, age, gender, status, phone, address, blood_group, bed, doctor):
         self.name = name
         self.age = age
         self.gender = gender
@@ -115,37 +117,24 @@ class Patient(db.Model):
         self.address = address
         self.blood_group = blood_group
         self.bed = bed
+        self.doctor = doctor
 
     def __repr__(self):
         return f"name: {self.name}\nadmit_date: {self.admit_date}"
-
-class PatientContact(db.Model):
-    patient_id = db.Column(db.Integer, db.ForeignKey('patient.id'), nullable=False, primary_key=True)
-    contact = db.Column(db.String(250))
 
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    age = db.Column(db.Integer)
-    gender = db.Column(db.String(10))
     role = db.Column(db.String(20))
-    phone = db.Column(db.String(10), index=True, unique=True)
-    email = db.Column(db.String(50), index=True, unique=True)
-    address = db.Column(db.String(120))
     hospital_id = db.Column(db.Integer, db.ForeignKey('hospital.id'))
-    user_incharge = db.relationship('InCharge', backref='user_incharge', lazy=True)
 
 
-    def __init__(self, name,  age, gender, role, phone, email, address):
+    def __init__(self, name, role, hospital):
         self.name = name
-        self.age = age
-        self.gender = gender
         self.role = role
-        self.phone = phone
-        self.email = email
-        self.address = address
+        self.hospital = hospital
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -156,10 +145,21 @@ class User(UserMixin, db.Model):
     def __repr__(self):
         return f"name: {self.name}, id: {self.id}, role: {self.role}\n"
 
+class Doctor(db.Model):
+    __tablename__ = "doctor"
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(10), nullable=False)
+    age = db.Column(db.String(10), nullable=False)
+    gender = db.Column(db.String(10), nullable=False)
+    hospital_id = db.Column(db.Integer, db.ForeignKey('hospital.id'))
+    patients = db.relationship('Patient', backref='doctor', lazy=True)
 
-class InCharge(db.Model):
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False, primary_key=True)
-    bed_id = db.Column(db.Integer, db.ForeignKey('bed.id'), nullable=False, primary_key=True)
+    def __init__(self, name, age, gender, hospital):
+        self.name = name
+        self.age = age
+        self.gender = gender
+        self.hospital = hospital
+
 
 
 @login.user_loader

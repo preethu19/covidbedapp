@@ -2,6 +2,7 @@
 {% block navbar %}
 	<li><a href="#about">About</a></li>
 	<li><a href="#contact">Contact</a></li>
+	<li><a href="{{ url_for('hospital') }}">Hospitals</a></li>
 	{% if current_user.is_active %}
 		<li><a href="{{ url_for('patient_list') }}">Patients</a></li>
 		<li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
@@ -13,6 +14,7 @@
 
 
 {% block content %}
+
 <!-- Header Section -->
 <div class="header__main" id="home" data-aos="fade-up" data-aos-duration="1000">
 	<div class="header__wrapper">
