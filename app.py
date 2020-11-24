@@ -335,7 +335,7 @@ def addhospital():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        return redirect(url_for('home'))
+        return redirect(url_for('hospital'))
     for error in form.errors:
         print(error)
         if error == 'user':
@@ -346,6 +346,11 @@ def addhospital():
 
 @app.route("/hospital/<int:hospital_id>/edit", methods=['GET', 'POST'])
 def edithospital(hospital_id):
+
+    if current_user.role != 'admin':
+        flash('Unauthorised', 'danger')
+        return redirect(url_for('hospital'))
+
     hospital = Hospital.query.get_or_404(hospital_id)
     form = addhospitalform()
     if request.method=='POST' and form.validate_on_submit():
@@ -448,7 +453,8 @@ def patient_add():
         print(form.errors)
     return render_template('patient_add.html', form=form)
 
-@app.route('/patients/<int:patient_id>/update',methods=['GET', 'POST'])
+
+@app.route('/patients/<int:patient_id>/update', methods=['GET', 'POST'])
 @login_required
 def patient_update(patient_id):
     form = PatientBedForm()
@@ -531,8 +537,9 @@ def logout():
     return redirect(url_for('home'))
 
 @app.route('/register', methods=['GET','POST'])
+@login_required
 def register():
-    if current_user.is_authenticated:
+    if current_user.is_authenticated and current_user.role=='hospital':
         flash('Already Logged In','success')
         return redirect(url_for('home'))
     form = RegistrationForm()
@@ -541,8 +548,8 @@ def register():
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
-        flash('User registered successfully. You may login now', 'success')
-        return redirect(url_for('login'))
+        flash('Hospital registered successfully.', 'success')
+        return redirect(url_for('home'))
     return render_template('register.html', title='Register', form=form)
 
 

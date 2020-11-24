@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 {% block navbar %}
-    
+<li><a href="{{ url_for('hospital') }}">Hospitals</a></li>
+{% if current_user.is_authenticated and current_user.role == "admin" %}
+<li><a href="{{ url_for('addhospital') }}">Add a Hospital</a></li>
+<li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
+<li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% endif %}
 {% endblock navbar %}
 {% block content %}
 

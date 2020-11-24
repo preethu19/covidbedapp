@@ -3,9 +3,16 @@
 {% block navbar %}
 	
     {% if current_user.is_active %}
+        {% if current_user.role == "admin" %}
+        <li><a href="{{ url_for('addhospital') }}">Add Hospital</a></li>
+        {% endif %}
+        {% if current_user.role == "hospital" %}
         <li><a href="{{ url_for('patient_list') }}">Patients</a></li>
-	    <li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
-	    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        <li><a href="{{ url_for('patient_add') }}">Add Patients</a></li>
+        <li><a href="{{ url_for('doctor_add') }}">Add Doctor</a></li>
+        {% endif %}
+        <li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
+        <li><a href="{{ url_for('logout') }}">Logout</a></li>
 	{% else %}
 	    <li><a href="{{ url_for('login') }}">Login</a></li>
 	{% endif %}
@@ -108,6 +115,27 @@
             </tr>
 
             {% for row in hospitals.items %}  
+            {% if current_user.role == "admin" %}
+            
+            <tr style="text-align: center;" class="table__row">
+                <td class="table__cell"><a href="{{ url_for('edithospital', hospital_id = row.id) }}">{{row.name}}</a></td>
+                <td class="table__cell">{{row.area}}</td>
+                <td class="table__cell">{{row.district}}</td>
+                <td class="table__cell">{{row.state}}</td>
+                <td class="table__cell">{{row.total_beds}}</td>
+                <td class="table__cell">{{row.available_beds}}</td>
+                <td class="table__cell">{{row.total_ward_beds}}</td>
+                <td class="table__cell">{{row.available_ward_beds}}</td>
+                <td class="table__cell">{{row.total_ward_beds_with_oxygen}}</td>
+                <td class="table__cell">{{row.available_ward_beds_with_oxygen}}</td>
+                <td class="table__cell">{{row.total_icu_beds}}</td>
+                <td class="table__cell">{{row.available_icu_beds}}</td>
+                <td class="table__cell">{{row.total_icu_beds_with_oxygen}}</td>
+                <td class="table__cell">{{row.available_icu_beds_with_oxygen}}</td>
+                
+            </tr>
+            
+            {% else %}
             <tr style="text-align: center;" class="table__row">
                 <td class="table__cell">{{row.name}}</td>
                 <td class="table__cell">{{row.area}}</td>
@@ -123,7 +151,8 @@
                 <td class="table__cell">{{row.available_icu_beds}}</td>
                 <td class="table__cell">{{row.total_icu_beds_with_oxygen}}</td>
                 <td class="table__cell">{{row.available_icu_beds_with_oxygen}}</td>
-            </tr>   
+            </tr>
+            {% endif %}
             {% endfor %}
 
         </table>

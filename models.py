@@ -13,6 +13,7 @@ Migrate(app, db)
 
 
 class Contact(db.Model):
+    __tablename__ = "contact"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     date_posted = db.Column(db.DateTime, nullable=False,
@@ -30,6 +31,7 @@ class Contact(db.Model):
 
 
 class Hospital(db.Model):
+    __tablename__ = "hospital"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     area = db.Column(db.String(100), nullable=False)
@@ -124,6 +126,7 @@ class Patient(db.Model):
 
 
 class User(UserMixin, db.Model):
+    __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), index=True, unique=True)
     password_hash = db.Column(db.String(128))
