@@ -699,3 +699,67 @@ border:none;
 .table__header .table{
 font-size: 14px;
 }
+
+.profile__header input.hidden {
+  position: absolute;
+  left: -9999px;
+}
+
+
+.profile__header .tital{ font-size:16px; font-weight:500;}
+.profile__header .bot-border{ border-bottom:1px #f8f8f8 solid;  margin:5px 0  5px 0}	
+
+.profile__header .title{
+text-align: center;
+}
+
+.profile__header .card-header{
+text-align: center;
+}
+
+.profile__header .card{
+text-align: center;
+
+}
+
+
+.row .btn{
+width: 10px;
+padding: 10px 20px;
+margin: 10px 80px;
+}
+
+.row .btn:hover{
+font-weight: bold;
+font-size: 16px;
+}
+
+.profile__header .profile__container{
+  width: 830px;
+  position: absolute;
+  margin-top:100px;
+  margin-bottom: 50px;
+  margin-left: 200px;
+}
+
+.profile__container #patient__button{
+  margin: 10px 350px;
+}
+
+.profile__container .row:hover{
+  font-weight: bold;
+}
+
+.profile__container .row:hover .tital{
+  font-weight: bold;
+}
+
+.complaint{
+  text-align: left;
+  margin-left: 80px;
+}
+
+.pagination_content{
+  margin-left: 350px;
+  margin-top: 10px;
+}

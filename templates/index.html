@@ -118,7 +118,7 @@
             {% if current_user.role == "admin" %}
             
             <tr style="text-align: center;" class="table__row">
-                <td class="table__cell"><a href="{{ url_for('edithospital', hospital_id = row.id) }}">{{row.name}}</a></td>
+                <td class="table__cell"><a href="{{ url_for('profilehospital', hospital_id = row.id) }}">{{row.name}}</a></td>
                 <td class="table__cell">{{row.area}}</td>
                 <td class="table__cell">{{row.district}}</td>
                 <td class="table__cell">{{row.state}}</td>

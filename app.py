@@ -344,6 +344,11 @@ def addhospital():
             flash('Password Mismatch', 'danger')
     return render_template('hospitaladd.html', form=form, title="Add Hospital")
 
+@app.route('/hospital/<int:hospital_id>/profile')
+def profilehospital(hospital_id):
+    hospital = Hospital.query.get_or_404(hospital_id)
+    return render_template('hospitalprofile.html' , hospital=hospital)
+
 @app.route("/hospital/<int:hospital_id>/edit", methods=['GET', 'POST'])
 def edithospital(hospital_id):
 
@@ -377,6 +382,13 @@ def edithospital(hospital_id):
         form.total_icu_beds_with_oxygen.data = hospital.total_icu_beds_with_oxygen
     return render_template('hospitaledit.html',hospital=hospital, form=form, title="Edit Hospital")
 
+@app.route("/hospital/<int:hospital_id>/remove", methods=['GET', 'POST'])
+def removehospital(hospital_id):
+    h = Hospital.query.get_or_404(hospital_id)
+    db.session.delete(h)
+    db.session.commit()
+    return redirect(url_for('hospital'))
+
 @app.route('/doctors/new', methods=['GET', 'POST'])
 @login_required
 def doctor_add():
@@ -389,18 +401,31 @@ def doctor_add():
     return render_template('doctor_add.html', form=form)
 
 
-@app.route('/profile')
-@login_required
-def profile():
-    return redirect(url_for('home'))
 
 @app.route('/patients')
 @login_required
 def patient_list():
-    hospital = current_user.hospital
+    current_hospital = request.args.get('current_hospital', type=int)
+    if current_hospital:
+        hospital = Hospital.query.get_or_404(current_hospital)
+        print('queried hospital')
+        print(hospital)
+    else:
+        hospital = current_user.hospital
+        print('logged user')
+        print(hospital)
     page = request.args.get('page', 1, type=int)
-    patients = Patient.query.join(Bed).filter(Bed.id==Patient.bed_id).join(Hospital).filter(Bed.hospital_id==Hospital.id, Hospital.id==hospital.id).order_by(Patient.admit_date.desc()).paginate(per_page=1, page=page)
+    patients = Patient.query.join(Bed).filter(Bed.id==Patient.bed_id).join(Hospital).filter(Bed.hospital_id==Hospital.id, Hospital.id==hospital.id).order_by(Patient.admit_date.desc()).paginate(per_page=10, page=page)
     return render_template('patient.html', patients=patients, hospital=hospital)
+
+@app.route('/patient/<int:patient_id>')
+def patient_profile(patient_id):
+    patient = Patient.query.get_or_404(patient_id)
+    return render_template('patient_profile.html' , patient=patient)
+
+@app.route('/profile')
+def profile():
+    return 'Profile Page'
 
 
 @app.route('/patients/new',  methods=['GET','POST'])
@@ -490,6 +515,7 @@ def patient_update(patient_id):
                 h.available_beds += 1
         db.session.commit()
         flash('Patient Data is updated', 'success')
+        return redirect(url_for('patient_profile', patient_id=p.id))
     elif request.method == 'POST':
         flash('All fields are required', 'danger')
     form.name.data = p.name
@@ -551,6 +577,22 @@ def register():
         flash('Hospital registered successfully.', 'success')
         return redirect(url_for('home'))
     return render_template('register.html', title='Register', form=form)
+
+@app.route('/complaint')
+@login_required    
+def complaint():
+    page = request.args.get('page', 1, type=int)
+    clist = Contact.query.order_by(Contact.date_posted.desc()).paginate(per_page=10, page=page)
+    return render_template('complaint.html', clist=clist, title="Complaint Section")
+    
+@app.route('/complaint/<int:complaint_id>/resolve')  
+@login_required  
+def resolvecomplaint(complaint_id):
+    c = Contact.query.get_or_404(complaint_id)
+    db.session.delete(c)
+    db.session.commit()
+    return redirect(url_for('complaint'))
+
 
 
 if __name__ == '__main__':

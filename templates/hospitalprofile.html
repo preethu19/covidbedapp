@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="profile__header">
+    <div class="container profile__container">
+        <div class="card">
+            <div class="card-header">  <h4 >User Profile</h4></div>
+                <div class="title">
+                    <h4 style="color:#00b1b1;">{{ hospital.name }} </h4>
+                    <span><p>Hospital</p></span>            
+                </div>
+                <div class="clearfix"></div>
+                <hr style="margin:5px 0 5px 0;">
+        
+                  <div class="row">
+                        <div class="col-sm-5 col-xs-6 tital">Area:</div>
+                        <div class="col-sm-7 col-xs-6">{{ hospital.area }}</div>
+                        <div class="clearfix"></div>
+                        
+                  </div>
+                  <div class="bot-border"></div>
+                    
+                  <div class="row">
+                    <div class="col-sm-5 col-xs-6 tital">District:</div>
+                    <div class="col-sm-7">{{ hospital.district }}</div>
+                      <div class="clearfix"></div>
+                    
+                </div>
+                <div class="bot-border"></div>
+    
+                <div class="row">
+                    <div class="col-sm-5 col-xs-6 tital">State:</div>
+                    <div class="col-sm-7">{{ hospital.district }}</div>
+                      <div class="clearfix"></div>
+                    
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+                    <div class="col-sm-5 col-xs-6 tital">Total Beds</div>
+                    <div class="col-sm-7">{{ hospital.total_beds }}</div>
+                        <div class="clearfix"></div>
+                    
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+    
+                    <div class="col-sm-5 col-xs-6 tital">Available Beds:</div>
+                    <div class="col-sm-7">{{ hospital.available_beds }}</div>
+                        <div class="clearfix"></div>
+                    
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+    
+                    <div class="col-sm-5 col-xs-6 tital">Total ward Beds:</div>
+                    <div class="col-sm-7">{{ hospital.total_ward_beds }}</div>
+                        <div class="clearfix"></div>
+                    
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+    
+                    <div class="col-sm-5 col-xs-6 tital">Available Ward Beds:</div>
+                    <div class="col-sm-7">{{ hospital.available_ward_beds }}</div>
+                        <div class="clearfix"></div>
+                    
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+                    <div class="col-sm-5 col-xs-6 tital">Total Ward Beds with Oxygen:</div>
+                    <div class="col-sm-7">{{ hospital.total_ward_beds_with_oxygen }}</div>
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+                    <div class="col-sm-5 col-xs-6 tital"> Available Ward Beds With Oxygen:</div>
+                    <div class="col-sm-7">{{ hospital.available_ward_beds_with_oxygen }}</div>
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+                    <div class="col-sm-5 col-xs-6 tital"> Total Icu Beds:</div>
+                    <div class="col-sm-7">{{ hospital.total_icu_beds }}</div>
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+                    <div class="col-sm-5 col-xs-6 tital"> Available Icu Beds:</div>
+                    <div class="col-sm-7">{{ hospital.available_icu_beds }}</div>
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+                    <div class="col-sm-5 col-xs-6 tital">Total Icu Beds With Oxygen:</div>
+                    <div class="col-sm-7">{{ hospital.total_icu_beds_with_oxygen }}</div>
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+                    <div class="col-sm-5 col-xs-6 tital"> Available Icu Beds With Oxygen:</div>
+                    <div class="col-sm-7">{{ hospital.available_icu_beds_with_oxygen }}</div>
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+                    
+                    <a type="button" class="btn btn-primary col" href="{{ url_for('edithospital', hospital_id=hospital.id) }}">Edit</a>
+                    <a type="button" class="btn btn-danger col" href="{{ url_for('removehospital', hospital_id=hospital.id) }}">Delete</a>
+                    <a href="{{ url_for('patient_list', current_hospital=hospital.id) }}" class="btn btn-secondary col" type="button">Patients</a>
+                </div>
+            </div>
+    </div>
+    
+</div>
+
+
+
+
+
+{% endblock content %}

@@ -1,0 +1,53 @@
+  {% extends 'base.html' %}
+  {% block navbar %}
+  <li><a href="{{ url_for('logout') }}">Logout</a></li>
+  {% endblock %}
+  {% block content %}
+
+    <div class="profile__header">
+        <div class="container profile__container">
+            <div class="card">
+                <div class="card-header">  <h4 >Complaints</h4></div>
+                {% for complaint in clist.items %}
+                <br>
+                    <div class="title row">
+                        <h4 style="color:#00b1b1;" class="col">{{ complaint.name }} </h4>
+                        <span class="col"><p>Dated: {{ complaint.date_posted.strftime('%Y-%m-%d') }}</p></span>            
+                    </div>
+                    <div class="clearfix"></div>
+                    <hr style="margin:5px 0 5px 0;">
+            
+                      <div class="row">
+                            
+                            <div class="col-sm-7 col-xs-6 complaint">{{ complaint.content }}</div>
+                            <div class="clearfix"></div>
+                            
+                      </div>
+                      
+                    <div class="bot-border"></div>
+                    <div class="row">
+                        <a type="button" class="btn btn-primary col" id="patient__button" href="{{ url_for('resolvecomplaint', complaint_id=complaint.id) }}">Resolve</a>
+                    </div>
+                    <hr>
+                  {% endfor %}
+          
+
+   </div>
+           <div class="pagination_content">
+             {% for page_num in clist.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+            {% if page_num %}
+                {% if clist.page == page_num %}
+                  <a class="btn btn-info mb-4" href="{{ url_for('complaint', page=page_num) }}">{{ page_num }}</a>
+                {% else %}
+                  <a class="btn btn-outline-info mb-4" href="{{ url_for('complaint', page=page_num) }}">{{ page_num }}</a>
+                {% endif %}
+            {% else %}
+              ...
+            {% endif %}
+          {% endfor %}
+           </div>
+          
+ 
+        </div>
+    </div>
+  {% endblock content %}

@@ -221,10 +221,18 @@
   font-weight: bold;
 }
 
+.wrapper__main tr:nth-child(even):hover a{
+  color: white;
+}
+
 .wrapper__main tr:nth-child(odd):hover{
   background-color: black;
   color: white;
   font-weight: bold;
+}
+
+.wrapper__main tr:nth-child(odd):hover a{
+  color: white;
 }
 
 .wrapper__main .table__row:nth-child(even){
@@ -276,4 +284,8 @@
 
 .wrapper__main{
   padding-top: 40px;
+}
+
+.wrapper__main .table__cell a{
+  color: black;
 }

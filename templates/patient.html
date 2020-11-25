@@ -127,7 +127,7 @@
   <tbody>
   {% for patient in patients.items %}
     <tr>
-      <td><a href="{{ url_for('patient_update', patient_id=patient.id) }}">{{ patient.name }}</a></td>
+      <td><a href="{{ url_for('patient_profile', patient_id=patient.id) }}">{{ patient.name }}</a></td>
       <td>{{ patient.status }}</td>
       <td>{{ patient.bed.bed_number }}</td>
       <td>{{ patient.bed.bed_type }}</td>
