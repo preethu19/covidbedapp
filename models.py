@@ -2,10 +2,10 @@ from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from sqlalchemy.orm import backref
-from app import app
+from app import app, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
-from app import login
+#from __main__    import login
 
 
 db = SQLAlchemy(app)

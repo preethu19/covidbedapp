@@ -101,7 +101,14 @@ class DoctorForm(FlaskForm):
     age = IntegerField('Age', validators=[DataRequired()], render_kw={"placeholder": "Enter Age"})
     gender = SelectField('Gender', choices=[('choose gender', 'Choose Gender'),('male','Male'),('female','Female')])
     submit = SubmitField('Submit')
-
+  
+class edithospitalform(FlaskForm):
+    total_beds = IntegerField('total_beds', validators=[DataRequired()])
+    total_ward_beds = IntegerField('total_ward_beds', validators=[DataRequired()])
+    total_ward_beds_with_oxygen = IntegerField('total_ward_beds_with_oxygen', validators=[DataRequired()])
+    total_icu_beds = IntegerField('total_icu_beds', validators=[DataRequired()])
+    total_icu_beds_with_oxygen = IntegerField('total_icu_beds_with_oxygen', validators=[DataRequired()])
+    submit = SubmitField('Enter') 
 
 
 

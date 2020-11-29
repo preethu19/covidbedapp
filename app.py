@@ -16,7 +16,7 @@ login = LoginManager(app)
 login.login_view = 'login'
 
 from models import db
-from forms import ContactForm, PatientBedForm, LoginForm, RegistrationForm, InfoForm, addhospitalform, DoctorForm
+from forms import ContactForm, PatientBedForm, LoginForm, RegistrationForm, InfoForm, addhospitalform, DoctorForm, edithospitalform
 from models import Contact, Hospital, Patient, Bed, User, Doctor
 
 @app.route('/', methods=['GET','POST'])
@@ -357,24 +357,31 @@ def edithospital(hospital_id):
         return redirect(url_for('hospital'))
 
     hospital = Hospital.query.get_or_404(hospital_id)
-    form = addhospitalform()
+    form = edithospitalform()
     if request.method=='POST' and form.validate_on_submit():
-        if hospital.total_beds <= form.total_beds.data and hospital.total_ward_beds <= form.total_ward_beds.data and\
-        hospital.total_ward_beds_with_oxygen <= form.total_ward_beds_with_oxygen.data and hospital.total_icu_beds <= form.total_icu_beds.data and\
-        hospital.total_icu_beds_with_oxygen <= form.total_icu_beds_with_oxygen.data:                                                                    
+        if (hospital.total_beds-hospital.available_beds) <= form.total_beds.data and (hospital.total_ward_beds-hospital.available_ward_beds) <= form.total_ward_beds.data and\
+        (hospital.total_ward_beds_with_oxygen-hospital.available_ward_beds_with_oxygen) <= form.total_ward_beds_with_oxygen.data and (hospital.total_icu_beds-hospital.available_icu_beds) <= form.total_icu_beds.data and\
+        (hospital.total_icu_beds_with_oxygen-hospital.available_icu_beds_with_oxygen) <= form.total_icu_beds_with_oxygen.data:  
+            availableBeds = form.total_beds.data - (hospital.total_beds-hospital.available_beds)
+            availableWardBeds = form.total_ward_beds.data - (hospital.total_ward_beds-hospital.available_ward_beds)
+            availableWardBedswithOxygen = form.total_ward_beds_with_oxygen.data  - (hospital.total_ward_beds_with_oxygen-hospital.available_ward_beds_with_oxygen)  
+            availableIcuBeds = form.total_icu_beds.data - (hospital.total_icu_beds-hospital.available_icu_beds)         
+            availableIcuBedswithOxygen = form.total_icu_beds_with_oxygen.data - (hospital.total_icu_beds_with_oxygen-hospital.available_icu_beds_with_oxygen)  
+                                             
             db.session.query(Hospital).filter_by(id=hospital_id).update({Hospital.total_beds: form.total_beds.data, Hospital.total_ward_beds: form.total_ward_beds.data,\
                                                                   Hospital.total_ward_beds_with_oxygen: form.total_ward_beds_with_oxygen.data, Hospital.total_icu_beds: form.total_icu_beds.data,\
-                                                                  Hospital.total_icu_beds_with_oxygen:form.total_icu_beds_with_oxygen.data}, synchronize_session = False) 
+                                                                  Hospital.total_icu_beds_with_oxygen:form.total_icu_beds_with_oxygen.data, Hospital.available_beds: availableBeds, Hospital.available_ward_beds: availableWardBeds,\
+                                                                  Hospital.available_ward_beds_with_oxygen: availableWardBedswithOxygen, Hospital.available_icu_beds: availableIcuBeds, Hospital.available_icu_beds_with_oxygen: availableIcuBedswithOxygen}, synchronize_session = False) 
             db.session.commit()
             return redirect(url_for('hospital')) 
         else:
             return redirect(url_for('home'))
     else:
-        form.hospitalname.data = hospital.name
-        form.area.data = hospital.area
-        form.district.data = hospital.district
-        form.state.data = hospital.state
-        form.phone.data = hospital.phone
+        #form.hospitalname.data = hospital.name
+        #form.area.data = hospital.area
+        #form.district.data = hospital.district
+        #form.state.data = hospital.state
+        #form.phone.data = hospital.phone
         form.total_beds.data = hospital.total_beds
         form.total_ward_beds.data = hospital.total_ward_beds
         form.total_ward_beds_with_oxygen.data = hospital.total_ward_beds_with_oxygen

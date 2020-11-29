@@ -28,20 +28,24 @@
 				{% endwith %}
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
                     <span class="label-input100">Hospital Name</span>
-                    {{ form.hospitalname(class="input100") }}
+                    <div>
+                        {{ hospital.name }}
+                    </div>
 					<span class="focus-input100"></span>
 				</div>
 
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Area</span>
-					{{ form.area(class="input100") }}
+					<div>
+    					{{ hospital.area }}
+    				</div>
 					<span class="focus-input100"></span>
 				</div>
 
 				<div class="wrap-input100 input100-select">
 					<span class="label-input100">District</span>
 					<div>
-						{{ form.district(class="input100") }}
+						{{ hospital.district }}
 					</div>
 					<span class="focus-input100"></span>
 				</div>
@@ -49,7 +53,7 @@
 				<div class="wrap-input100 input100-select">
 					<span class="label-input100">State</span>
 					<div>
-						{{ form.state(class="input100") }}
+						{{ hospital.state }}
 					</div>
 					<span class="focus-input100"></span>
 				</div>
