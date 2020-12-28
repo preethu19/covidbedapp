@@ -18,7 +18,7 @@ class PatientBedForm(FlaskForm):
     status = SelectField('Status', choices=[('choose patient status', 'Choose Patient Status'),('admitted', 'Admitted'),('discharged', 'Discharged')])
     phone = IntegerField('Phone', validators=[DataRequired()], render_kw={"placeholder": "Enter Mobile number"})
     address = StringField('Address', validators=[DataRequired()], render_kw={"placeholder": "Enter Address"})
-    blood_group = SelectField('Blood Group', choices=[('choose blood group', 'Choose Blood Group'),('a +ve', 'A +ve'),('a -ve','A -ve'), ('b +ve', 'B +ve'), ('b -ve', 'B -ve'), ('ab +ve', 'AB +ve'), ('ab -vr', 'AB -vr'), ('o +ve', 'O +ve'), ('o -ve', 'O -ve')])
+    blood_group = SelectField('Blood Group', choices=[('choose blood group', 'Choose Blood Group'),('a +ve', 'A +ve'),('a -ve','A -ve'), ('b +ve', 'B +ve'), ('b -ve', 'B -ve'), ('ab +ve', 'AB +ve'), ('ab -ve', 'AB -ve'), ('o +ve', 'O +ve'), ('o -ve', 'O -ve')])
     bed_number = IntegerField('Bed Number', validators=[DataRequired()], render_kw={"placeholder": "Enter Bed Number"})
     bed_type = SelectField('Blood Group', choices=[('choose bed type','Choose Bed Type'),('ward', 'Ward'),('ward with oxygen', 'Ward with oxygen'),('icu', 'ICU'),('icu with oxygen', 'ICU with oxygen')])
     cost = IntegerField('Cost', validators=[DataRequired()], render_kw={"placeholder": "Enter Cost"})
@@ -93,7 +93,7 @@ class addhospitalform(FlaskForm):
             raise ValidationError('Please use a different email address.')
 
     def validate_phone(self, phone):
-        if not 5000000000 < int(phone.data) < 9999999999:
+        if not 1000000000 < int(phone.data) < 9999999999:
             raise ValidationError('Enter valid phone')
 
 class DoctorForm(FlaskForm):

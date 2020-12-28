@@ -147,10 +147,10 @@
   <tbody>
   {% for patient in patients.items %}
     <tr>
-      <td><a href="{{ url_for('patient_profile', patient_id=patient.id) }}">{{ patient.name }}</a></td>
-      <td>{{ patient.status }}</td>
+      <td><a href="{{ url_for('patient_profile', patient_id=patient.id) }}">{{ patient.name.title() }}</a></td>
+      <td>{{ patient.status.title() }}</td>
       <td>{{ patient.bed.bed_number }}</td>
-      <td>{{ patient.bed.bed_type }}</td>
+      <td>{{ patient.bed.bed_type.title() }}</td>
       <td>{{ patient.admit_date.strftime('%Y-%m-%d') }}</td>
         {% if patient.discharge_date %}
             <td>{{ patient.discharge_date.strftime('%Y-%m-%d') }}</td>
@@ -164,9 +164,9 @@
         {% for page_num in patients.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
         {% if page_num %}
             {% if patients.page == page_num %}
-                <a class="btn btn-info mb-4" href="{{ url_for('patient_list', page=page_num) }}">{{ page_num }}</a>
+                <a class="btn btn-info mb-4" href="{{ url_for('patient_list', page=page_num, current_hospital=hospital.id) }}">{{ page_num }}</a>
             {% else %}
-                <a class="btn btn-outline-info mb-4" href="{{ url_for('patient_list', page=page_num) }}">{{ page_num }}</a>
+                <a class="btn btn-outline-info mb-4" href="{{ url_for('patient_list', page=page_num, current_hospital=hospital.id) }}">{{ page_num }}</a>
             {% endif %}
         {% else %}
             ...

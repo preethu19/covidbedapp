@@ -1,126 +1,178 @@
-from models import db, Hospital, Patient, Bed
+states = {
+"Andhra Pradesh": [
+	"Srikakulam","Sri Potti Sriramulu Nellore","Visakhapatnam","Vizianagaram","West Godavari"
+],
+"Arunachal Pradesh":[
+	"Anjaw","Changlang","Dibang Valley","East Kameng","East Siang"
+],
+"Assam": [
+	"Baksa","Barpeta","Biswanath","Chirang","Darrang"
+],
+"Bihar": [
+	"Araria", "Arwal","Aurangabad", "Banka", "Begusarai"
+],
+"Chhattisgarh":[
+	"Balod", "Dantewada", "Durg", "Jashpur", "Kanker"
+],
+"Goa":[
+	"North Goa", "South Goa"
+],
+"Gujarat": [
+	"Ahmedabad", "Amreli", "Botad", "Dang", "Gandhinagar"
+],
+"Haryana": [
+	"Ambala", "Bhiwani", "Faridabad", "Gurgaon", "Kurukshetra"
+],
+"Himachal Pradesh":[
+	"Bilaspur", "Chamba", "Hamirpur", "Kangra", "Kullu"
+],
+"Jammu and Kashmir":[
+	"Anantnag", "Badgam", "Bandipora", "Baramulla", "Doda"
+],
+"Jharkhand":[
+	"Bokaro", "Chatra", "Deoghar", "Giridih","Gumla" 
+],
+"Karnataka":[
+	"Bangalore", "Dakshina Kannada", "Belgaum", "Dharwad", "Hassan"
+],
+"Kerala":[
+	"Alappuzha", "Kasaragod", "Kozhikode", "Palakkad", "Wayanad"
+],
+"Madhya Pradesh":[
+	"Ashok Nagar", "Bhopal", "Gwalior", "Indore","	Ujjain"
+],
+"Maharashtra":[
+	"Ahmednagar", "Amravati", "Chandrapur", "Jalgaon", "Mumbai"
+],
+"Manipur":[
+	"Bishnupur", "Imphal", "Noney", "Senapati", "Thoubal" 
+],
+"Meghalaya":[
+	"East Garo Hills", "East Khasi Hills", "North Garo Hills", "South Garo Hills"
+],
+"Mizoram":[
+	"Aizawl", "Champhai", "Khawzawl", "Lawngtlai", "Mamit"
+],
+"Nagaland":[
+	"Dimapur", "Kiphire", "Longleng", "Mon", "Peren"
+],
+"Odisha":[
+	"Angul", "Bhadrak", "Balasore", "Cuttack",  "Gajapati"
+],
+"Punjab": [
+	"Amritsar", "Barnala", "Firozpur", "Fatehgarh Sahib", "Gurdaspur"
+],
+"Rajasthan":[
+	"Ajmer", "Alwar", "Banswara", "Churu", "Chittorgarh"
+],
+"Sikkim": [
+	"East Sikkim", "North Sikkim", "South Sikkim", "West Sikkim"
+],
+"Tamil Nadu": [
+	"Ariyalur", "Chengalpattu", "Chennai", "Coimbatore", "Dindigul"
+],
+"Telangana": [
+	"Adilabad", "Jagtial", "Hyderabad", "Karimnagar", "Nalgonda"
+],
+"Tripura": [
+	"Dhalai", "Gomati", "North Tripura", "South Tripura", "West Tripura"
+],
+"Uttar Pradesh":[
+	"Agra", "Ambedkar Nagar", "Amethi", "Auraiya", "Bareilly"
+],
+"Uttarakhand": [
+	"Almora", "Chamoli", "Haridwar", "Nainital","Uttarkashi" 
+],
+"West Bengal":[
+	"Alipurduar", "Birbhum", "Hooghly", "Howrah"
+],
+"Andaman and Nicobar Islands": [
+	"Nicobar", "North and Middle Andaman","South Andaman" 
+],
+"Chandigarh":[
+	"Chandigarh"
+],
+"Dadra and Nagar Haveli":[
+	"Daman", "Diu", "Dadra and Nagar Haveli"
+],
+"Lakshadweep":[
+	"Lakshadweep"
+],
+"Delhi":[
+	"Central Delhi", "East Delhi", "New Delhi", "South Delhi"
+],
+"Puducherry":[
+	"Karaikal", "Mahé", "Puducherry", "Yanam"
+]
+}
+
 from faker import Faker
-fakegen = Faker()
+from random import randint
+import random
+from models import *
 
-h = Hospital(name='Father Muller Hospital', area='badyar', district='D.K', state='Karnataka', total_beds=1000, available_beds=900,\
-                 total_ward_beds=250, available_ward_beds=225, total_ward_beds_with_oxygen=300,\
-                 available_ward_beds_with_oxygen=275, total_icu_beds=350, available_icu_beds=325,\
-                 total_icu_beds_with_oxygen=100, available_icu_beds_with_oxygen=75)
-db.session.add(h)
-db.session.commit()
+def random_with_N_digits(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return randint(range_start, range_end)
 
-b1 = Bed(bed_number=1, bed_type='ward', cost=10000, hospital=h)
-b2 = Bed(bed_number=2, bed_type='ward', cost=10000, hospital=h)
-b3 = Bed(bed_number=3, bed_type='ward', cost=10000, hospital=h)
-b4 = Bed(bed_number=4, bed_type='ward', cost=10000, hospital=h)
-b5 = Bed(bed_number=5, bed_type='ward', cost=10000, hospital=h)
-b6 = Bed(bed_number=1, bed_type='ward with oxygen', cost=20000, hospital=h)
-b7 = Bed(bed_number=2, bed_type='ward with oxygen', cost=20000, hospital=h)
-b8 = Bed(bed_number=3, bed_type='ward with oxygen', cost=20000, hospital=h)
-b9 = Bed(bed_number=4, bed_type='ward with oxygen', cost=20000, hospital=h)
-b10 = Bed(bed_number=5, bed_type='ward with oxygen', cost=20000, hospital=h)
-b11 = Bed(bed_number=1, bed_type='ICU', cost=30000, hospital=h)
-b12 = Bed(bed_number=2, bed_type='ICU', cost=30000, hospital=h)
-b13 = Bed(bed_number=3, bed_type='ICU', cost=30000, hospital=h)
-b14 = Bed(bed_number=4, bed_type='ICU', cost=30000, hospital=h)
-b15 = Bed(bed_number=5, bed_type='ICU', cost=30000, hospital=h)
-b16 = Bed(bed_number=1, bed_type='ICU with oxygen', cost=40000, hospital=h)
-b17 = Bed(bed_number=2, bed_type='ICU with oxygen', cost=40000, hospital=h)
-b18 = Bed(bed_number=3, bed_type='ICU with oxygen', cost=40000, hospital=h)
-b19 = Bed(bed_number=4, bed_type='ICU with oxygen', cost=40000, hospital=h)
-b20 = Bed(bed_number=5, bed_type='ICU with oxygen', cost=40000, hospital=h)
-b21 = Bed(bed_number=7, bed_type='ICU without oxygen', cost=40000, hospital=h)
-db.session.add(b1)
-db.session.add(b2)
-db.session.add(b3)
-db.session.add(b4)
-db.session.add(b5)
-db.session.add(b6)
-db.session.add(b7)
-db.session.add(b8)
-db.session.add(b9)
-db.session.add(b10)
-db.session.add(b11)
-db.session.add(b12)
-db.session.add(b13)
-db.session.add(b14)
-db.session.add(b15)
-db.session.add(b16)
-db.session.add(b17)
-db.session.add(b18)
-db.session.add(b19)
-db.session.add(b20)
-db.session.add(b21)
-db.session.commit()
+faker = Faker()
+
+Faker.seed(0)
 
 
-p1 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b1)
-p2 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b2)
-p3 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b3)
-p4 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b4)
-p5 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b5)
-p6 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b6)
-p7 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b7)
-p8 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b8)
-p9 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b9)
-p10 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b10)
-p11 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b11)
-p12 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b12)
-p13 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b13)
-p14 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b14)
-p15 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b15)
-p16 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b16)
-p17 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b17)
-p18 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b18)
-p19 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b19)
-p20 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b20)
-p21 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b1)
-p22 = Patient(name='Rahul', age=25, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b2)
-p23 = Patient(name='Rahul Sharma', age=30, gender='male', status='admitted',\
-                 phone=1234567890, address='xyz', blood_group='A positive', bed=b21)
-db.session.add(p1)
-db.session.add(p2)
-db.session.add(p3)
-db.session.add(p4)
-db.session.add(p5)
-db.session.add(p6)
-db.session.add(p7)
-db.session.add(p8)
-db.session.add(p9)
-db.session.add(p10)
-db.session.add(p11)
-db.session.add(p12)
-db.session.add(p13)
-db.session.add(p14)
-db.session.add(p15)
-db.session.add(p16)
-db.session.add(p17)
-db.session.add(p18)
-db.session.add(p19)
-db.session.add(p20)
-db.session.add(p21)
-db.session.add(p22)
-db.session.add(p23)
+beds = {
+		'10000': [2500,3500,2000,2000],
+		'20000': [5000,7000,4000,4000],
+		'30000': [10000, 5000, 12000, 8000],
+		'40000': [15000, 10000, 8000, 7000],
+		'50000': [20000, 10000, 15000, 5000]
+		}
+
+random_id=0
+for i in states:
+	for j in states[i]:
+		for _ in range(5):
+			x = random.choice(['10000','20000','30000','40000','50000'])
+			h = Hospital(faker.first_name()+' Hospital',faker.street_name(),j,i,random_with_N_digits(10),int(x),int(x),beds[x][0],beds[x][0],beds[x][1],beds[x][1],beds[x][2],beds[x][2],beds[x][3],beds[x][3])
+			db.session.add(h)
+			u = User(h.name+str(random_id),'hospital',h)
+			u.set_password('test')
+			db.session.add(u)
+			random_id+=1
+			for _ in range(5):
+				d = Doctor(faker.name(),randint(30,50),random.choice(['male', 'female']),h)
+				db.session.add(d)
+				for _ in range(5):
+					b = Bed(random.randint(1,10000), random.choice(['ward','ward with oxygen','icu','icu with oxygen']), random.randint(10000, 100000),h)
+					db.session.add(b)
+					p = Patient(faker.name(),randint(1,100),random.choice(['male', 'female']), 'admitted', random_with_N_digits(10), faker.address(), random.choice(['a +ve','a -ve','b +ve','b -ve','ab +ve','ab -ve','o +ve','o -ve']),b,d)
+					db.session.add(p)
+	db.session.commit()
+
+for _ in range(100):
+	c = Contact(faker.name(),random_with_N_digits(10),faker.sentence(20))
+	db.session.add(c)
+	db.session.commit()
+
+
+
+
+h = Hospital.query.all()
+for i in h:
+	b = Bed.query.filter_by(hospital_id=i.id)
+	x = b.count()
+	i.available_beds -= x
+	b = Bed.query.filter_by(hospital_id=i.id,bed_type='ward')
+	x = b.count()
+	i.available_ward_beds -= x
+	b = Bed.query.filter_by(hospital_id=i.id,bed_type='ward with oxygen')
+	x = b.count()
+	i.available_ward_beds_with_oxygen -= x
+	b = Bed.query.filter_by(hospital_id=i.id,bed_type='icu')
+	x = b.count()
+	i.available_icu_beds -= x
+	b = Bed.query.filter_by(hospital_id=i.id,bed_type='icu with oxygen')
+	x = b.count()
+	i.available_icu_beds_with_oxygen -= x
 db.session.commit()

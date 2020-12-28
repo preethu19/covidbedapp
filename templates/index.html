@@ -118,28 +118,28 @@
             <tr class="table__head text-break">
                 <th class="table__cell" width="80px">Name</th>
                 <th class="table__cell" width="80px">Area</th>
-                <th class="table__cell" width="80px">district</th>
-                <th class="table__cell" width="80px">state</th>
-                <th class="table__cell" width="80px">total beds</th>
-                <th class="table__cell" width="90px">available beds</th>
-                <th class="table__cell" width="90px">total ward beds</th>
-                <th class="table__cell" width="90px">available ward beds</th>
-                <th class="table__cell" width="90px">total ward beds with oxygen</th>
-                <th class="table__cell" width="90px">available ward beds with oxygen</th>
-                <th class="table__cell" width="90px">total icu beds</th>
-                <th class="table__cell" width="90px">available icu beds</th>
-                <th class="table__cell" width="90px">total icu beds with oxygen</th>
-                <th class="table__cell" width="90px">available icu beds with oxygen</th>
+                <th class="table__cell" width="80px">District</th>
+                <th class="table__cell" width="80px">State</th>
+                <th class="table__cell" width="80px">Total Beds</th>
+                <th class="table__cell" width="90px">Available Beds</th>
+                <th class="table__cell" width="90px">Total Ward Beds</th>
+                <th class="table__cell" width="90px">Available Ward Beds</th>
+                <th class="table__cell" width="90px">Total Ward Beds with Oxygen</th>
+                <th class="table__cell" width="90px">Available Ward Beds with Oxygen</th>
+                <th class="table__cell" width="90px">Total ICU Beds</th>
+                <th class="table__cell" width="90px">Available ICU Beds</th>
+                <th class="table__cell" width="90px">Total ICU Beds with Oxygen</th>
+                <th class="table__cell" width="90px">Available ICU Beds with Oxygen</th>
             </tr>
 
             {% for row in hospitals.items %}  
             
             
             <tr style="text-align: center;" class="table__row">
-                <td class="table__cell"><a href="{{ url_for('profilehospital', hospital_id = row.id) }}">{{row.name}}</a></td>
-                <td class="table__cell">{{row.area}}</td>
-                <td class="table__cell">{{row.district}}</td>
-                <td class="table__cell">{{row.state}}</td>
+                <td class="table__cell"><a href="{{ url_for('profilehospital', hospital_id = row.id) }}">{{row.name.title()}}</a></td>
+                <td class="table__cell">{{row.area.title()}}</td>
+                <td class="table__cell">{{row.district.title()}}</td>
+                <td class="table__cell">{{row.state.title()}}</td>
                 <td class="table__cell">{{row.total_beds}}</td>
                 <td class="table__cell">{{row.available_beds}}</td>
                 <td class="table__cell">{{row.total_ward_beds}}</td>

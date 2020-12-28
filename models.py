@@ -22,7 +22,7 @@ class Contact(db.Model):
     phone = db.Column(db.Integer, nullable=False)
 
     def __init__(self, name, phone, content):
-        self.name = name
+        self.name = name.lower()
         self.phone = phone
         self.content = content
 
@@ -56,10 +56,10 @@ class Hospital(db.Model):
                  total_ward_beds, available_ward_beds, total_ward_beds_with_oxygen,
                  available_ward_beds_with_oxygen, total_icu_beds, available_icu_beds,
                  total_icu_beds_with_oxygen, available_icu_beds_with_oxygen):
-        self.name = name
-        self.area = area
-        self.district = district
-        self.state = state
+        self.name = name.lower()
+        self.area = area.lower()
+        self.district = district.lower()
+        self.state = state.lower()
         self.phone = phone
         self.total_beds = total_beds
         self.available_beds = available_beds
@@ -111,7 +111,7 @@ class Patient(db.Model):
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
 
     def __init__(self, name, age, gender, status, phone, address, blood_group, bed, doctor):
-        self.name = name
+        self.name = name.lower()
         self.age = age
         self.gender = gender
         self.status = status
@@ -135,7 +135,7 @@ class User(UserMixin, db.Model):
 
 
     def __init__(self, name, role, hospital):
-        self.name = name
+        self.name = name.lower()
         self.role = role
         self.hospital = hospital
 
@@ -158,7 +158,7 @@ class Doctor(db.Model):
     patients = db.relationship('Patient', backref='doctor', lazy=True)
 
     def __init__(self, name, age, gender, hospital):
-        self.name = name
+        self.name = name.lower()
         self.age = age
         self.gender = gender
         self.hospital = hospital

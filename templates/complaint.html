@@ -29,7 +29,7 @@
                 {% for complaint in clist.items %}
                 <br>
                     <div class="title row">
-                        <h4 style="color:#00b1b1;" class="col">{{ complaint.name }} </h4>
+                        <h4 style="color:#00b1b1;" class="col">{{ complaint.name.title() }} </h4>
                         <span class="col"><p>Dated: {{ complaint.date_posted.strftime('%Y-%m-%d') }}</p></span>            
                     </div>
                     <div class="clearfix"></div>

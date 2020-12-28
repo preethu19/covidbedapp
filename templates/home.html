@@ -124,7 +124,7 @@
      				<div class="box box1" data-aos="flip-down">
      					<div class="box_left">
      						<h1>Total Cases: </h1>
-	     					<p>100000</p>
+	     					<p>{{ total }}</p>
      					</div>
 	     				<div class="box_right">
 	     					<img src="{{ url_for('static', filename='img/total.svg') }}" class="count_logo">
@@ -133,7 +133,7 @@
 	     			<div class="box box2" data-aos="flip-down">
 	     				<div class="box_left">
 		     				<h1>Total Active: </h1>
-		     				<p>20000</p>
+		     				<p>{{ active }}</p>
 		     			</div>
 		     			<div class="box_right">
 	     					<img src="{{ url_for('static', filename='img/active.svg') }}" class="count_logo">
@@ -142,7 +142,7 @@
 	     			<div class="box box3" data-aos="flip-down">
 	     				<div class="box_left">
 	     					<h1>Total Recovered: </h1>
-	     					<p>20000</p>
+	     					<p>{{ recovered }}</p>
 	     				</div>
 	     				<div class="box_right">
 	     					<img src="{{ url_for('static', filename='img/recovered.svg') }}" class="count_logo">
@@ -151,7 +151,7 @@
 	     			<div class="box box4" data-aos="flip-down">
 	     				<div class="box_left">
 	     					<h1>Total Deaths: </h1>
-	     					<p>20000</p>
+	     					<p>{{ deaths }}</p>
 	     				</div>
 	     				<div class="box_right">
 	     					<img src="{{ url_for('static', filename='img/death.svg') }}" class="count_logo">

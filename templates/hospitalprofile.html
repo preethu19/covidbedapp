@@ -24,7 +24,7 @@
         <div class="card">
             <div class="card-header">  <h4 >User Profile</h4></div>
                 <div class="title">
-                    <h4 style="color:#00b1b1;">{{ hospital.name }} </h4>
+                    <h4 style="color:#00b1b1;">{{ hospital.name.title() }} </h4>
                     <span><p>Hospital</p></span>            
                 </div>
                 <div class="clearfix"></div>
@@ -32,7 +32,7 @@
         
                   <div class="row">
                         <div class="col-sm-5 col-xs-6 tital">Area:</div>
-                        <div class="col-sm-7 col-xs-6">{{ hospital.area }}</div>
+                        <div class="col-sm-7 col-xs-6">{{ hospital.area.title() }}</div>
                         <div class="clearfix"></div>
                         
                   </div>
@@ -40,7 +40,7 @@
                     
                   <div class="row">
                     <div class="col-sm-5 col-xs-6 tital">District:</div>
-                    <div class="col-sm-7">{{ hospital.district }}</div>
+                    <div class="col-sm-7">{{ hospital.district.title() }}</div>
                       <div class="clearfix"></div>
                     
                 </div>
@@ -48,7 +48,7 @@
     
                 <div class="row">
                     <div class="col-sm-5 col-xs-6 tital">State:</div>
-                    <div class="col-sm-7">{{ hospital.state }}</div>
+                    <div class="col-sm-7">{{ hospital.state.title() }}</div>
                       <div class="clearfix"></div>
                     
                 </div>
