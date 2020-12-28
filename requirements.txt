@@ -8,7 +8,7 @@ itsdangerous==1.1.0
 jinja2==2.11.2
 markupsafe==1.1.1
 pip==20.3.3
-python==3.6.9
+python==3.6.0
 setuptools==51.0.0
 vc==14.2
 vs2015_runtime==14.27.29016
