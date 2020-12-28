@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, json
 from datetime import datetime
 import os
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
@@ -29,6 +29,7 @@ def home():
         c = Contact(name, phone, content)
         db.session.add(c)
         db.session.commit()
+        flash('Complaint Registered Successfully', 'success')
         return redirect(url_for('home'))
     else:
         print('Home loaded')
@@ -52,8 +53,15 @@ def hospital():
         area = form.area.data
         beds = form.beds.data
         page = 1
-        print(name)
-        print(district)
+        print(name,area,district,state,beds)
+        print(form.district)
+        form.state.choices = [('Please Select', 'Please Select')] + [(s.state, s.state) for s in Hospital.query.group_by(Hospital.state)]
+        if state != 'Please Select':
+            form.district.choices = [('Please Select', 'Please Select')] + [(d.district, d.district) for d in Hospital.query.filter_by(state=state).group_by(Hospital.district)]
+        if district != 'Please Select':
+            form.area.choices = [('Please Select', 'Please Select')] + [(a.area, a.area) for a in Hospital.query.filter_by(district=district).group_by(Hospital.area)]
+        if area != 'Please Select':
+            form.name.choices = [('Please Select', 'Please Select')] + [(h.name, h.name) for h in Hospital.query.filter_by(area=area).group_by(Hospital.name)]        
     
     if request.method == 'GET':
         name = request.args.get('name')
@@ -61,6 +69,14 @@ def hospital():
         district = request.args.get('district')
         area = request.args.get('area')
         beds = request.args.get('beds')
+        print(name,area,district,state,beds)
+        form.state.choices = [('Please Select', 'Please Select')] + [(s.state, s.state) for s in Hospital.query.group_by(Hospital.state)]
+        if state and state != 'Please Select':
+            form.district.choices = [('Please Select', 'Please Select')] + [(d.district, d.district) for d in Hospital.query.filter_by(state=state).group_by(Hospital.district)]
+        if district and district != 'Please Select':
+            form.area.choices = [('Please Select', 'Please Select')] + [(a.area, a.area) for a in Hospital.query.filter_by(district=district).group_by(Hospital.area)]
+        if area and area != 'Please Select':
+            form.name.choices = [('Please Select', 'Please Select')] + [(h.name, h.name) for h in Hospital.query.filter_by(area=area).group_by(Hospital.name)]        
     # data = Hospital.query.order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page) 
     if form.validate_on_submit() and request.method == "POST":
         print('POST request')
@@ -68,8 +84,8 @@ def hospital():
         
         #print(request.form['name'])
         # print(form.name.data)
-        
-    data = Hospital.query.order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+    per_page = 1
+    data = Hospital.query.order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
     # if request.method == "POST":
         
         #print(request.form['name'])
@@ -84,232 +100,232 @@ def hospital():
         
     if(name =='Please Select' and district =='Please Select' and state =='Please Select' and area =='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds== 'available_beds':
-            data = Hospital.query.order_by(Hospital.available_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.order_by(Hospital.available_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name !=  'Please Select' and district =='Please Select' and state =='Please Select' and area =='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(name=name).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(name=name).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(name=name).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(name=name).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(name=name).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name ==  'Please Select' and district !='Please Select' and state =='Please Select' and area =='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(district=district).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(district=district).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(district=district).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(district=district).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(district=district).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(district=district).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(district=district).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name ==  'Please Select' and district =='Please Select' and state !='Please Select' and area =='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(state=state).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(state=state).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(state=state).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(state=state).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(state=state).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(state=state).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(state=state).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(state=state).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(state=state).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(state=state).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(state=state).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(state=state).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
     
     elif(name ==  'Please Select' and district =='Please Select' and state =='Please Select' and area !='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(area=area).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(area=area).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
     
     elif(name !=  'Please Select' and district !='Please Select' and state =='Please Select' and area =='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name !=  'Please Select' and district =='Please Select' and state !='Please Select' and area =='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, state=state).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name !=  'Please Select' and district =='Please Select' and state =='Please Select' and area !='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name ==  'Please Select' and district !='Please Select' and state !='Please Select' and area =='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, state=state).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name ==  'Please Select' and district !='Please Select' and state =='Please Select' and area !='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name ==  'Please Select' and district =='Please Select' and state !='Please Select' and area !='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(state=state, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
 
     elif(name !=  'Please Select' and district !='Please Select' and state !='Please Select' and area =='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, state=state).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name !=  'Please Select' and district !='Please Select' and state =='Please Select' and area !='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
 
     elif(name !=  'Please Select' and district =='Please Select' and state !='Please Select' and area !='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, state=state, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name ==  'Please Select' and district !='Please Select' and state !='Please Select' and area !='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(district=district, state=state, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     elif(name !=  'Please Select' and district !='Please Select' and state !='Please Select' and area !='Please Select'):
         if beds == 'total_beds':
-            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds== 'available_beds':
-            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.available_beds).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.available_beds).paginate(per_page=per_page, page=page)
         elif beds == 'available_ward_beds':
-            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=5, page=page)        
+            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.available_ward_beds.desc()).paginate(per_page=per_page, page=page)        
         elif beds == 'available_ward_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.available_ward_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds':
-            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.available_icu_beds.desc()).paginate(per_page=per_page, page=page)
         elif beds == 'available_icu_beds_with_oxygen':
-            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=5, page=page)
+            data = Hospital.query.filter_by(name=name, district=district, state=state, area=area).order_by(Hospital.available_icu_beds_with_oxygen.desc()).paginate(per_page=per_page, page=page)
 
     else:
-        data = Hospital.query.order_by(Hospital.total_beds.desc()).paginate(per_page=5, page=page)
+        data = Hospital.query.order_by(Hospital.total_beds.desc()).paginate(per_page=per_page, page=page)
         print("Get Request")
     form.name.data = name
     form.district.data = district
@@ -336,12 +352,6 @@ def addhospital():
         db.session.add(user)
         db.session.commit()
         return redirect(url_for('hospital'))
-    for error in form.errors:
-        print(error)
-        if error == 'user':
-            flash('Use different username', 'danger')
-        if error == 'password2':
-            flash('Password Mismatch', 'danger')
     return render_template('hospitaladd.html', form=form, title="Add Hospital")
 
 @app.route('/hospital/<int:hospital_id>/profile')
@@ -371,17 +381,20 @@ def edithospital(hospital_id):
             db.session.query(Hospital).filter_by(id=hospital_id).update({Hospital.total_beds: form.total_beds.data, Hospital.total_ward_beds: form.total_ward_beds.data,\
                                                                   Hospital.total_ward_beds_with_oxygen: form.total_ward_beds_with_oxygen.data, Hospital.total_icu_beds: form.total_icu_beds.data,\
                                                                   Hospital.total_icu_beds_with_oxygen:form.total_icu_beds_with_oxygen.data, Hospital.available_beds: availableBeds, Hospital.available_ward_beds: availableWardBeds,\
-                                                                  Hospital.available_ward_beds_with_oxygen: availableWardBedswithOxygen, Hospital.available_icu_beds: availableIcuBeds, Hospital.available_icu_beds_with_oxygen: availableIcuBedswithOxygen}, synchronize_session = False) 
+                                                                  Hospital.available_ward_beds_with_oxygen: availableWardBedswithOxygen, Hospital.available_icu_beds: availableIcuBeds, Hospital.available_icu_beds_with_oxygen: availableIcuBedswithOxygen, \
+                                                                  Hospital.name: form.hospitalname.data, Hospital.area:form.area.data, Hospital.district:form.district.data, \
+                                                                  Hospital.state:form.state.data, Hospital.phone:form.phone.data}, synchronize_session = False) 
             db.session.commit()
+            flash('Updated Hospital Data', 'success')
             return redirect(url_for('hospital')) 
         else:
             return redirect(url_for('home'))
-    else:
-        #form.hospitalname.data = hospital.name
-        #form.area.data = hospital.area
-        #form.district.data = hospital.district
-        #form.state.data = hospital.state
-        #form.phone.data = hospital.phone
+    elif request.method == 'GET':
+        form.hospitalname.data = hospital.name
+        form.area.data = hospital.area
+        form.district.data = hospital.district
+        form.state.data = hospital.state
+        form.phone.data = hospital.phone
         form.total_beds.data = hospital.total_beds
         form.total_ward_beds.data = hospital.total_ward_beds
         form.total_ward_beds_with_oxygen.data = hospital.total_ward_beds_with_oxygen
@@ -394,6 +407,7 @@ def removehospital(hospital_id):
     h = Hospital.query.get_or_404(hospital_id)
     db.session.delete(h)
     db.session.commit()
+    flash('Hospital Data deleted', 'success')
     return redirect(url_for('hospital'))
 
 @app.route('/doctors/new', methods=['GET', 'POST'])
@@ -404,7 +418,7 @@ def doctor_add():
         doctor = Doctor(name=form.name.data, age=form.age.data, gender=form.gender.data, hospital=current_user.hospital)
         db.session.add(doctor)
         db.session.commit()
-        return redirect('home')
+        flash('Doctor Data is added', 'success')
     return render_template('doctor_add.html', form=form)
 
 
@@ -425,6 +439,7 @@ def patient_list():
     patients = Patient.query.join(Bed).filter(Bed.id==Patient.bed_id).join(Hospital).filter(Bed.hospital_id==Hospital.id, Hospital.id==hospital.id).order_by(Patient.admit_date.desc()).paginate(per_page=10, page=page)
     return render_template('patient.html', patients=patients, hospital=hospital)
 
+@login_required
 @app.route('/patient/<int:patient_id>')
 def patient_profile(patient_id):
     patient = Patient.query.get_or_404(patient_id)
@@ -439,9 +454,10 @@ def profile():
 @login_required
 def patient_add():
     form = PatientBedForm()
+    form.doctor_name.choices = [('choose doctor', 'Choose Doctor')]+[(d.name, d.name) for d in Doctor.query.filter_by(hospital=current_user.hospital)]
     if request.method == 'POST' and form.validate_on_submit() and form.gender.data != 'choose gender' and\
             form.status.data != 'choose patient status' and form.blood_group.data != 'choose blood group'\
-            and form.bed_type.data != 'choose bed type':
+            and form.bed_type.data != 'choose bed type' and form.doctor_name.data != 'choose doctor':
         h = current_user.hospital
         if form.bed_type.data=='ward':
             if h.available_ward_beds<=h.total_ward_beds:
@@ -479,10 +495,7 @@ def patient_add():
         db.session.commit()
         print('Commit successful')
         flash('Patient Data is added', 'success')
-    elif request.method == 'POST':
-        flash('All fields are required', 'danger')
-        print('Validation failed')
-        print(form.errors)
+        return redirect(url_for('patient_list'))
     return render_template('patient_add.html', form=form)
 
 
@@ -490,6 +503,7 @@ def patient_add():
 @login_required
 def patient_update(patient_id):
     form = PatientBedForm()
+    form.doctor_name.choices = [('choose doctor', 'Choose Doctor')]+[(d.name, d.name) for d in Doctor.query.filter_by(hospital=current_user.hospital)]
     h = current_user.hospital
     p = Patient.query.get_or_404(patient_id)
     if request.method == 'POST' and form.validate_on_submit() and form.gender.data != 'choose gender' and \
@@ -504,8 +518,69 @@ def patient_update(patient_id):
         p.address = form.address.data
         p.doctor = Doctor.query.filter_by(name = form.doctor_name.data, hospital=current_user.hospital).first_or_404()
         p.bed.bed_number = form.bed_number.data
-        p.bed.bed_type = form.bed_type.data
-        p.bed.cost = form.cost.data
+        if form.bed_type.data != p.bed.bed_type:
+            print('Bed Type Changed')
+            print('form data', form.bed_type.data)
+            print('patient data', p.bed.bed_type)
+            if form.bed_type.data=='ward':
+                if h.available_ward_beds<=h.total_ward_beds:
+                    h.available_ward_beds -= 1
+                    if p.bed.bed_type=='ward with oxygen':
+                        h.available_ward_beds_with_oxygen += 1
+                        print('Increased ward wtith oxygen count')
+                    elif p.bed.bed_type=='icu':
+                        h.available_icu_beds += 1
+                    elif p.bed.bed_type=='icu with oxygen':
+                        h.available_icu_beds_with_oxygen += 1
+                    p.bed.bed_type = form.bed_type.data
+                else:
+                    flash('Ward beds are filled', 'danger')
+                    redirect(url_for('patient_update'))
+            elif form.bed_type.data=='ward with oxygen':
+                print('Bed Typed changed to ward with oxygen')
+                if h.available_ward_beds_with_oxygen<=h.total_ward_beds_with_oxygen:
+                    h.available_ward_beds_with_oxygen -= 1
+                    print('data changed')
+                    if p.bed.bed_type=='ward':
+                        h.available_ward_beds += 1
+                        h.available_ward_beds_with_oxygen += 1
+                    elif p.bed.bed_type=='icu':
+                        h.available_icu_beds += 1
+                    elif p.bed.bed_type=='icu with oxygen':
+                        h.available_icu_beds_with_oxygen += 1
+                    p.bed.bed_type = form.bed_type.data
+                else:
+                    flash('Ward beds with oxygen are filled', 'danger')
+                    redirect(url_for('patient_update'))
+            elif form.bed_type.data=='icu':
+                print('Bed Typed changed to icu')
+                if h.available_icu_beds<=h.total_icu_beds:
+                    h.available_icu_beds -= 1
+                    print('Data changed')
+                    if p.bed.bed_type=='ward':
+                        h.available_ward_beds += 1
+                    elif p.bed.bed_type=='ward with oxygen':
+                        h.available_ward_beds_with_oxygen += 1
+                    elif p.bed.bed_type=='icu with oxygen':
+                        h.available_icu_beds_with_oxygen += 1
+                    p.bed.bed_type = form.bed_type.data
+                else:
+                    flash('ICU beds are filled', 'danger')
+                    redirect(url_for('patient_update'))
+            elif form.bed_type.data=='icu with oxygen':
+                if h.available_icu_beds_with_oxygen<=h.total_icu_beds_with_oxygen:
+                    h.available_icu_beds_with_oxygen -= 1
+                    if p.bed.bed_type=='ward':
+                        h.available_ward_beds += 1
+                    elif p.bed.bed_type=='ward with oxygen':
+                        h.available_ward_beds_with_oxygen += 1
+                    elif p.bed.bed_type=='icu':
+                        h.available_icu_beds += 1
+                    p.bed.bed_type = form.bed_type.data
+                else:
+                    flash('ICU beds with oxygen are filled', 'danger')
+                    redirect(url_for('patient_update'))
+            p.bed.cost = form.cost.data
         if (not p.discharge_date) and form.status.data == 'discharged':
             p.discharge_date = datetime.utcnow()
             if form.bed_type.data=='ward':
@@ -522,7 +597,7 @@ def patient_update(patient_id):
                 h.available_beds += 1
         db.session.commit()
         flash('Patient Data is updated', 'success')
-        return redirect(url_for('patient_profile', patient_id=p.id))
+        return redirect(url_for('patient_list'))
     elif request.method == 'POST':
         flash('All fields are required', 'danger')
     form.name.data = p.name
@@ -598,7 +673,53 @@ def resolvecomplaint(complaint_id):
     c = Contact.query.get_or_404(complaint_id)
     db.session.delete(c)
     db.session.commit()
+    flash('Complaint Resolved', 'success')
     return redirect(url_for('complaint'))
+
+@app.route('/district/<get_district>')
+def districtbystate(get_district):
+    district = Hospital.query.filter_by(state=get_district).group_by(Hospital.district)
+    districtArray = []
+    districtObj = {}
+    districtObj['value'] = 'Please Select'
+    districtObj['display'] = 'Please Select'
+    districtArray.append(districtObj)
+    for a in district:
+        districtObj = {}
+        districtObj['value'] = a.district
+        districtObj['display'] = a.district
+        districtArray.append(districtObj)
+    return jsonify({'districtstate': districtArray})
+
+@app.route('/area/<get_area>')
+def areabydistrict(get_area):
+    area = Hospital.query.filter_by(district=get_area).group_by(Hospital.area)
+    areaArray = []
+    areaObj = {}
+    areaObj['value'] = 'Please Select'
+    areaObj['display'] = 'Please Select'
+    areaArray.append(areaObj)
+    for a in area:
+        areaObj = {}
+        areaObj['value'] = a.area
+        areaObj['display'] = a.area
+        areaArray.append(areaObj)
+    return jsonify({'areadistrict': areaArray})
+
+@app.route('/hospitals/<get_hospital>')
+def hospitalbyarea(get_hospital):
+    hospital = Hospital.query.filter_by(area=get_hospital).group_by(Hospital.name)
+    hospitalArray = []
+    hospitalObj = {}
+    hospitalObj['value'] = 'Please Select'
+    hospitalObj['display'] = 'Please Select'
+    hospitalArray.append(hospitalObj)
+    for a in hospital:
+        hospitalObj = {}
+        hospitalObj['value'] = a.name
+        hospitalObj['display'] = a.name
+        hospitalArray.append(hospitalObj)
+    return jsonify({'hospitalarea': hospitalArray})
 
 
 

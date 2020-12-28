@@ -3,7 +3,8 @@
 <li><a href="{{ url_for('hospital') }}">Hospitals</a></li>
 {% if current_user.is_authenticated and current_user.role == "admin" %}
 <li><a href="{{ url_for('addhospital') }}">Add a Hospital</a></li>
-<li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
+<li><a href="{{ url_for('complaint') }}">Complaints</a></li>
+<li><a href="#">Logged in as: {{current_user.name}}</a></li>
 <li><a href="{{ url_for('logout') }}">Logout</a></li>
 {% endif %}
 {% endblock navbar %}
@@ -17,76 +18,105 @@
 				<span class="contact100-form-title">
 					Edit Hospital
 				</span>
-				{% with messages = get_flashed_messages(with_categories=true) %}
-					{% if messages %}
-						{% for category, message in messages %}
-							<div class="alert alert-{{ category }}">
-								{{ message }}
-							</div>
-						{% endfor %}
-					{% endif %}
-				{% endwith %}
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
                     <span class="label-input100">Hospital Name</span>
                     <div>
-                        {{ hospital.name }}
+						{{ form.hospitalname(class="input100") }}
+
                     </div>
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.hospitalname.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Area</span>
 					<div>
-    					{{ hospital.area }}
+						{{ form.area(class="input100") }}
+
     				</div>
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.area.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 input100-select">
 					<span class="label-input100">District</span>
 					<div>
-						{{ hospital.district }}
+						{{ form.district(class="input100") }}
 					</div>
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.district.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 input100-select">
 					<span class="label-input100">State</span>
 					<div>
-						{{ hospital.state }}
+						{{ form.state(class="input100") }}
 					</div>
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.state.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+
+				<div class="wrap-input100 input100-select">
+					<span class="label-input100">Phone</span>
+					<div>
+						{{ form.phone(class="input100") }}
+					</div>
+					<span class="focus-input100"></span>
+				</div>
+				{% for error in form.phone.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Total Beds</span>
 					{{ form.total_beds(class="input100") }}
 					<span class="focus-input100"></span>
                 </div>
+                {% for error in form.total_beds.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
                 
                 <div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Available Beds</span>
 					<p class="input100">{{ hospital.available_beds }}</p>
 					<span class="focus-input100"></span>
 				</div>
+				
 
 				<div class="wrap-input100 validate-input" data-validate = "Message is required">
 					<span class="label-input100">Total Ward Beds</span>
 					{{ form.total_ward_beds(class="input100") }}
 					<span class="focus-input100"></span>
                 </div>
+                {% for error in form.total_ward_beds.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+                
                 
                 <div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Available Ward Beds</span>
 					<p class="input100">{{ hospital.available_ward_beds }}</p>
 					<span class="focus-input100"></span>
 				</div>
+				
 
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Total Ward Beds with Oxygen</span>
 					{{ form.total_ward_beds_with_oxygen(class="input100") }}
 					<span class="focus-input100"></span>
                 </div>
+                {% for error in form.total_ward_beds_with_oxygen.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
+                
 
                 <div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Available Ward Beds with Oxygen</span>
@@ -99,6 +129,9 @@
 					{{ form.total_icu_beds(class="input100") }}
 					<span class="focus-input100"></span>
                 </div>
+                {% for error in form.total_icu_beds.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
                 <div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Available ICU Beds</span>
@@ -111,6 +144,9 @@
 					{{ form.total_icu_beds_with_oxygen(class="input100") }}
 					<span class="focus-input100"></span>
                 </div>
+                {% for error in form.total_icu_beds_with_oxygen.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
                 
                 <div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Available ICU Beds with Oxygen</span>

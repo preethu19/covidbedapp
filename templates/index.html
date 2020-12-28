@@ -5,13 +5,15 @@
     {% if current_user.is_active %}
         {% if current_user.role == "admin" %}
         <li><a href="{{ url_for('addhospital') }}">Add Hospital</a></li>
+        <li><a href="{{ url_for('complaint') }}">Complaints</a></li>
+        <li><a href="#">Logged in as: {{current_user.name}}</a></li>
         {% endif %}
         {% if current_user.role == "hospital" %}
         <li><a href="{{ url_for('patient_list') }}">Patients</a></li>
         <li><a href="{{ url_for('patient_add') }}">Add Patients</a></li>
         <li><a href="{{ url_for('doctor_add') }}">Add Doctor</a></li>
+        <li><a href="{{ url_for('profilehospital', hospital_id = current_user.hospital.id) }}">Logged in as: {{current_user.name}}</a></li>
         {% endif %}
-        <li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
         <li><a href="{{ url_for('logout') }}">Logout</a></li>
 	{% else %}
 	    <li><a href="{{ url_for('login') }}">Login</a></li>
@@ -21,8 +23,23 @@
 
 {% block content %}
 <div class="wrapper__main">
+
     <div class="page-wrapper bg-gra-03 p-t-45 p-b-50">
+
         <div class="wrapper wrapper--w790">
+            <div class="row" style="z-index: 100;position: fixed;width:80%;text-align:center;margin-top:60px;margin-right: 30%;margin-left: 35%">
+                <div class="col">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                        {% if messages %}
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
             <div class="card card-5">
                 <div class="card-heading">
                     <h2 class="title">Search Here for Hospitals</h2>
@@ -34,6 +51,7 @@
                             <div class="col-md-12">
                                 <form href="/" method="POST">
                                     {{ form.hidden_tag() }}
+
                                     <div class="row">
                                         <div>
                                             <div style="margin-top: 10px;" class="form-group">
@@ -115,7 +133,7 @@
             </tr>
 
             {% for row in hospitals.items %}  
-            {% if current_user.role == "admin" %}
+            
             
             <tr style="text-align: center;" class="table__row">
                 <td class="table__cell"><a href="{{ url_for('profilehospital', hospital_id = row.id) }}">{{row.name}}</a></td>
@@ -135,24 +153,7 @@
                 
             </tr>
             
-            {% else %}
-            <tr style="text-align: center;" class="table__row">
-                <td class="table__cell">{{row.name}}</td>
-                <td class="table__cell">{{row.area}}</td>
-                <td class="table__cell">{{row.district}}</td>
-                <td class="table__cell">{{row.state}}</td>
-                <td class="table__cell">{{row.total_beds}}</td>
-                <td class="table__cell">{{row.available_beds}}</td>
-                <td class="table__cell">{{row.total_ward_beds}}</td>
-                <td class="table__cell">{{row.available_ward_beds}}</td>
-                <td class="table__cell">{{row.total_ward_beds_with_oxygen}}</td>
-                <td class="table__cell">{{row.available_ward_beds_with_oxygen}}</td>
-                <td class="table__cell">{{row.total_icu_beds}}</td>
-                <td class="table__cell">{{row.available_icu_beds}}</td>
-                <td class="table__cell">{{row.total_icu_beds_with_oxygen}}</td>
-                <td class="table__cell">{{row.available_icu_beds_with_oxygen}}</td>
-            </tr>
-            {% endif %}
+            
             {% endfor %}
 
         </table>
@@ -194,5 +195,91 @@
 </div>
         
 </div>
-    
+<script type="text/javascript">
+    state_select = document.getElementById('state');
+    district_select = document.getElementById('district');
+    area_select = document.getElementById('area');
+    hospital_select = document.getElementById('na');
+    console.log('state', state_select);
+    state_select.onchange = function(){
+        state = state_select.value;
+        console.log('state',state)
+        fetch('district/'+ state).then(function(response){
+            response.json().then(function(data){
+                optionHTML = '';
+                console.log('districtstate', data.districtstate);
+                for (s of data.districtstate){
+                    optionHTML += '<option value="'+ s.value +'">' + s.display + '</option>'
+                }
+                district_select.innerHTML = optionHTML;
+                district = district_select.value;
+                console.log('state select',state_select.value)
+                console.log('district',district)
+                fetch('area/'+ district).then(function(response){
+                    response.json().then(function(data){
+                        optionHTML = '';
+                        console.log('areadistrict', data.areadistrict);
+                        for (s1 of data.areadistrict){
+                            optionHTML += '<option value="'+ s1.value +'">' + s1.display + '</option>'
+                        }
+                        area_select.innerHTML = optionHTML;
+                        area = area_select.value;
+                        console.log('area',area)
+                        fetch('hospitals/'+ area).then(function(response){
+                            response.json().then(function(data){
+                                optionHTML = '';
+                                console.log('hospitalarea', data.hospitalarea);
+                                for (s2 of data.hospitalarea){
+                                    optionHTML += '<option value="'+ s2.value +'">' + s2.display + '</option>'
+                                }
+                                hospital_select.innerHTML = optionHTML;
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    }
+    district_select.onchange = function(){
+        district = district_select.value;
+        console.log('state select',state_select.value)
+        console.log('district',district)
+        fetch('area/'+ district).then(function(response){
+            response.json().then(function(data){
+                optionHTML = '';
+                console.log('areadistrict', data.areadistrict);
+                for (s1 of data.areadistrict){
+                    optionHTML += '<option value="'+ s1.value +'">' + s1.display + '</option>'
+                }
+                area_select.innerHTML = optionHTML;
+                area = area_select.value;
+                console.log('area',area)
+                fetch('hospitals/'+ area).then(function(response){
+                    response.json().then(function(data){
+                        optionHTML = '';
+                        console.log('hospitalarea', data.hospitalarea);
+                        for (s2 of data.hospitalarea){
+                            optionHTML += '<option value="'+ s2.value +'">' + s2.display + '</option>'
+                        }
+                        hospital_select.innerHTML = optionHTML;
+                    });
+                });
+            });
+        });
+    }
+    area_select.onchange = function(){
+        area = area_select.value;
+        console.log('area',area)
+        fetch('hospitals/'+ area).then(function(response){
+            response.json().then(function(data){
+                optionHTML = '';
+                console.log('hospitalarea', data.hospitalarea);
+                for (s2 of data.hospitalarea){
+                    optionHTML += '<option value="'+ s2.value +'">' + s2.display + '</option>'
+                }
+                hospital_select.innerHTML = optionHTML;
+            });
+        });
+    }
+</script>
 {% endblock content %}

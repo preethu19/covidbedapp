@@ -1,4 +1,22 @@
 {% extends 'base.html' %}
+{% block navbar %}
+<li><a href="{{ url_for('hospital') }}">Hospitals</a></li>
+{% if current_user.is_authenticated %}
+
+    {% if current_user.role == "admin" %}
+        <li><a href="{{ url_for('addhospital') }}">Add Hospital</a></li>
+        <li><a href="{{ url_for('complaint') }}">Complaints</a></li>
+        <li><a href="#">Logged in as: {{current_user.name}}</a></li>
+    {% endif %}
+    {% if current_user.role == "hospital" %}
+        <li><a href="{{ url_for('patient_list') }}">Patients</a></li>
+        <li><a href="{{ url_for('patient_add') }}">Add Patients</a></li>
+        <li><a href="{{ url_for('doctor_add') }}">Add Doctor</a></li>
+        <li><a href="{{ url_for('profilehospital', hospital_id = current_user.hospital.id) }}">Logged in as: {{current_user.name}}</a></li>
+    {% endif %}
+    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+{% endif %}
+{% endblock %}
 {% block content %}
 
 <div class="profile__header">
@@ -30,7 +48,14 @@
     
                 <div class="row">
                     <div class="col-sm-5 col-xs-6 tital">State:</div>
-                    <div class="col-sm-7">{{ hospital.district }}</div>
+                    <div class="col-sm-7">{{ hospital.state }}</div>
+                      <div class="clearfix"></div>
+                    
+                </div>
+                <div class="bot-border"></div>
+                <div class="row">
+                    <div class="col-sm-5 col-xs-6 tital">Phone:</div>
+                    <div class="col-sm-7">{{ hospital.phone }}</div>
                       <div class="clearfix"></div>
                     
                 </div>
@@ -95,13 +120,36 @@
                     <div class="col-sm-5 col-xs-6 tital"> Available Icu Beds With Oxygen:</div>
                     <div class="col-sm-7">{{ hospital.available_icu_beds_with_oxygen }}</div>
                 </div>
+                {% if current_user.role == "admin" %}
                 <div class="bot-border"></div>
                 <div class="row">
                     
                     <a type="button" class="btn btn-primary col" href="{{ url_for('edithospital', hospital_id=hospital.id) }}">Edit</a>
-                    <a type="button" class="btn btn-danger col" href="{{ url_for('removehospital', hospital_id=hospital.id) }}">Delete</a>
+                    <a type="button" class="btn btn-danger col" href='#' data-toggle="modal" data-target="#staticBackdrop">Delete</a>
                     <a href="{{ url_for('patient_list', current_hospital=hospital.id) }}" class="btn btn-secondary col" type="button">Patients</a>
                 </div>
+                
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Confirm Deletion</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            </div>
+                            <div class="modal-body">
+                            Are you sure you want to delete {{ hospital.name }} data?
+                            </div>
+                            <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <a href="{{ url_for('removehospital', hospital_id=hospital.id) }}"><button type="button" class="btn btn-danger" href="">Delete</button></a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
     </div>
     

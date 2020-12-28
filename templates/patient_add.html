@@ -4,7 +4,7 @@
 		{% if current_user.is_authenticated and current_user.role == "hospital" %}
 		<li><a href="{{ url_for('patient_list') }}">Patients</a></li>
 		<li><a href="{{ url_for('doctor_add') }}">Add Doctor</a></li>
-		<li><a href="{{ url_for('profile') }}">Logged in as: {{current_user.name}}</a></li>
+		<li><a href="{{ url_for('profilehospital', hospital_id = current_user.hospital.id) }}">Logged in as: {{current_user.name}}</a></li>
 		<li><a href="{{ url_for('logout') }}">Logout</a></li>
 		{% endif %}
 {% endblock navbar %}
@@ -32,12 +32,18 @@
 					{{ form.name(class="input100 is-invalid") }}
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.name.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Age</span>
 					{{ form.age(class="input100") }}
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.age.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 input100-select">
 					<span class="label-input100">Gender</span>
@@ -46,6 +52,9 @@
 					</div>
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.gender.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 input100-select">
 					<span class="label-input100">Status</span>
@@ -54,18 +63,27 @@
 					</div>
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.status.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Phone number</span>
 					{{ form.phone(class="input100") }}
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.phone.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 validate-input" data-validate = "Message is required">
 					<span class="label-input100">Address</span>
 					{{ form.address(class="input100") }}
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.address.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 input100-select">
 					<span class="label-input100">Blood Group</span>
@@ -74,12 +92,18 @@
 					</div>
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.blood_group.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Bed number</span>
 					{{ form.bed_number(class="input100") }}
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.bed_number.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 input100-select">
 					<span class="label-input100">Bed Type</span>
@@ -88,18 +112,27 @@
 					</div>
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.bed_type.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Cost</span>
 					{{ form.cost(class="input100") }}
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.cost.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="wrap-input100 validate-input" data-validate="Name is required">
 					<span class="label-input100">Doctor name</span>
-					{{ form.doctor_name(class="input100") }}
+					{{ form.doctor_name(class="selection-2") }}
 					<span class="focus-input100"></span>
 				</div>
+				{% for error in form.doctor_name.errors %}
+                <span style="color: red;">{{ error }}</span>
+                {% endfor %}
 
 				<div class="container-contact100-form-btn">
 					<div class="wrap-contact100-form-btn">

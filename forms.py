@@ -22,7 +22,7 @@ class PatientBedForm(FlaskForm):
     bed_number = IntegerField('Bed Number', validators=[DataRequired()], render_kw={"placeholder": "Enter Bed Number"})
     bed_type = SelectField('Blood Group', choices=[('choose bed type','Choose Bed Type'),('ward', 'Ward'),('ward with oxygen', 'Ward with oxygen'),('icu', 'ICU'),('icu with oxygen', 'ICU with oxygen')])
     cost = IntegerField('Cost', validators=[DataRequired()], render_kw={"placeholder": "Enter Cost"})
-    doctor_name = StringField('Name', validators=[DataRequired()], render_kw={"placeholder": "Enter Name"})
+    doctor_name = SelectField('Name', validators=[DataRequired()], choices=[])
     submit = SubmitField('Submit')
 
 class LoginForm(FlaskForm):
@@ -59,27 +59,27 @@ class RegistrationForm(FlaskForm):
             raise ValidationError('Enter valid phone')
 
 class InfoForm(FlaskForm):
-    name = SelectField('Name', choices=[('Please Select','Please Select'),('Preetham emergency','Preetham emergency'),('Nandan clinic','Nandan clinic'),('Siddarth multispeciality','Siddarth multispeciality'),('Father Muller Hospital','Father Muller Hospital')])
-    district = SelectField('District: ', choices=[('Please Select','Please Select'),('D.K','D.K'),('Banglore','Banglore')])
-    state = SelectField('State: ', choices=[('Please Select','Please Select'),('Andra','Andra'),('Karnataka','Karnataka')])
-    area = SelectField('Area: ', choices=[('Please Select','Please Select'),('badyar','badyar'),('mattikere','mattikere')])
-    beds = SelectField('Sort bed results by ', validators=[DataRequired()], choices=[('total_beds','total_beds'),('available_beds','available_beds'),('available_ward_beds','available_ward_beds'),('available_ward_beds_with_oxygen','available_ward_beds_with_oxygen'),('available_icu_beds','available_icu_beds'),('available_icu_beds_with_oxygen','available_icu_beds_with_oxygen')], default='total_beds')
+    name = SelectField('name', choices=[('Please Select','Please Select')])
+    district = SelectField('district', choices=[('Please Select','Please Select')])
+    state = SelectField('state', choices=[('Please Select','Please Select')])
+    area = SelectField('area', choices=[('Please Select','Please Select')])
+    beds = SelectField('Sort bed results by ', validators=[DataRequired()], choices=[('total_beds','Total beds'),('available_beds','Available beds'),('available_ward_beds','Available ward beds'),('available_ward_beds_with_oxygen','Available ward beds with oxygen'),('available_icu_beds','Available ICU beds'),('available_icu_beds_with_oxygen','Available ICU beds with oxygen')], default='total_beds')
     submit = SubmitField('Search')
 
 class addhospitalform(FlaskForm):
-    hospitalname = StringField('Hospital Name', validators=[DataRequired()])
-    area = StringField('area', validators=[DataRequired()])
-    district = StringField('district', validators=[DataRequired()])
-    state = StringField('state', validators=[DataRequired()])
-    phone = StringField('phone', validators=[DataRequired()])
+    hospitalname = StringField('Hospital Name', validators=[DataRequired()], render_kw={"placeholder": "Enter Hospital Name"})
+    area = StringField('area', validators=[DataRequired()], render_kw={"placeholder": "Enter Hospital Area"})
+    district = StringField('district', validators=[DataRequired()], render_kw={"placeholder": "Enter Hospital District"})
+    state = StringField('state', validators=[DataRequired()], render_kw={"placeholder": "Enter Hospital District"})
+    phone = IntegerField('phone', validators=[DataRequired()], render_kw={"placeholder": "Enter Hospital Phone Number"})
     user = StringField('User Name', validators=[DataRequired()], render_kw={"placeholder": "Enter User Name"})
     password = PasswordField('Password', validators=[DataRequired()], render_kw={"placeholder": "Enter Password"})
     password2 = PasswordField('Repeat Password', validators=[DataRequired(), EqualTo('password')], render_kw={"placeholder": "Re-Enter Password"})
-    total_beds = IntegerField('total_beds', validators=[DataRequired()])
-    total_ward_beds = IntegerField('total_ward_beds', validators=[DataRequired()])
-    total_ward_beds_with_oxygen = IntegerField('total_ward_beds_with_oxygen', validators=[DataRequired()])
-    total_icu_beds = IntegerField('total_icu_beds', validators=[DataRequired()])
-    total_icu_beds_with_oxygen = IntegerField('total_icu_beds_with_oxygen', validators=[DataRequired()])
+    total_beds = IntegerField('total_beds', validators=[DataRequired()], render_kw={"placeholder": "Enter Total Beds"})
+    total_ward_beds = IntegerField('total_ward_beds', validators=[DataRequired()], render_kw={"placeholder": "Enter Total Ward Beds"})
+    total_ward_beds_with_oxygen = IntegerField('total_ward_beds_with_oxygen', validators=[DataRequired()], render_kw={"placeholder": "Enter Total Ward Beds with Oxygen"})
+    total_icu_beds = IntegerField('total_icu_beds', validators=[DataRequired()], render_kw={"placeholder": "Enter Total ICU Beds"})
+    total_icu_beds_with_oxygen = IntegerField('total_icu_beds_with_oxygen', validators=[DataRequired()], render_kw={"placeholder": "Enter Total ICU Beds with Oxygen"})
     submit = SubmitField('Enter')    
 
     def validate_user(self, user):
@@ -103,6 +103,11 @@ class DoctorForm(FlaskForm):
     submit = SubmitField('Submit')
   
 class edithospitalform(FlaskForm):
+    hospitalname = StringField('Hospital Name', validators=[DataRequired()])
+    area = StringField('area', validators=[DataRequired()])
+    district = StringField('district', validators=[DataRequired()])
+    state = StringField('state', validators=[DataRequired()])
+    phone = IntegerField('phone', validators=[DataRequired()])
     total_beds = IntegerField('total_beds', validators=[DataRequired()])
     total_ward_beds = IntegerField('total_ward_beds', validators=[DataRequired()])
     total_ward_beds_with_oxygen = IntegerField('total_ward_beds_with_oxygen', validators=[DataRequired()])

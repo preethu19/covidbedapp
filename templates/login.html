@@ -38,7 +38,7 @@
                     <span class="focus-input100"></span>
                 </div>
                 {% for error in form.name.errors %}
-                <span style="color: red;">[{{ error }}]</span>
+                <span style="color: red;">{{ error }}</span>
                 {% endfor %}
 
                 <div class="wrap-input100 validate-input" data-validate="Password is required">
@@ -47,7 +47,7 @@
                     <span class="focus-input100"></span>
                 </div>
                 {% for error in form.password.errors %}
-                <span style="color: red;">[{{ error }}]</span>
+                <span style="color: red;">{{ error }}</span>
                 {% endfor %}
 
                 <div class="wrap-input100 input100-select" data-validate="Password is required">
@@ -58,7 +58,7 @@
                     <span class="focus-input100"></span>
                 </div>
                 {% for error in form.password2.errors %}
-                <span style="color: red;">[{{ error }}]</span>
+                <span style="color: red;">{{ error }}</span>
                 {% endfor %}
 
                 <div>

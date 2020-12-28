@@ -82,7 +82,7 @@ class Bed(db.Model):
     bed_number = db.Column(db.Integer, nullable=False)
     bed_type = db.Column(db.String(100), nullable=False)
     cost = db.Column(db.Integer, nullable=False)
-    hospital_id = db.Column(db.Integer, db.ForeignKey('hospital.id'), nullable=False)
+    hospital_id = db.Column(db.Integer, db.ForeignKey('hospital.id', ondelete='CASCADE'), nullable=False)
     patients = db.relationship('Patient', backref='bed', lazy=True)
 
     def __init__(self, bed_number, bed_type, cost, hospital):
@@ -107,7 +107,7 @@ class Patient(db.Model):
     phone = db.Column(db.Integer, nullable=False)
     address = db.Column(db.Text, nullable=False)
     blood_group = db.Column(db.String(20), nullable=False)
-    bed_id = db.Column(db.Integer, db.ForeignKey('bed.id'), nullable=False)
+    bed_id = db.Column(db.Integer, db.ForeignKey('bed.id', ondelete='CASCADE'), nullable=False)
     doctor_id = db.Column(db.Integer, db.ForeignKey('doctor.id'), nullable=False)
 
     def __init__(self, name, age, gender, status, phone, address, blood_group, bed, doctor):
