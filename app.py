@@ -10,8 +10,7 @@ import json
 app = Flask(__name__)
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + \
-    os.path.join(basedir, 'data.sqlite')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'mysecret'
 
@@ -738,6 +737,18 @@ def hospitalbyarea(get_hospital):
         hospitalObj['display'] = a.name
         hospitalArray.append(hospitalObj)
     return jsonify({'hospitalarea': hospitalArray})
+
+@app.errorhandler(404)
+def error_404(error):
+    return render_template('404.html'), 404
+
+@app.errorhandler(403)
+def error_403(error):
+    return render_template('403.html'), 403
+
+@app.errorhandler(500)
+def error_500(error):
+    return render_template('500.html'), 500
 
 
 
